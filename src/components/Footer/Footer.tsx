@@ -13,11 +13,11 @@ const brandsVal = brands
 export default function Footer() {
   const [urlList, setUrlList] = useState(brandsVal)
   return (
-    <footer className='pt-11 pb-9 bg-[#f5f5f5]'>
-      <div className='w-9/12 mx-auto'>
-        <div className='  grid grid-cols-9 gap-x-3'>
+    <footer className='pt-11 pb-4  md:pb-9 bg-[#f5f5f5]'>
+      <div className=' w-10/12 md:w-9/12 mx-auto'>
+        <div className='  grid grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-3 md:gap-6 lg:gap-3'>
           <div className='col-span-2'>
-            <p className='uppercase text-[#000000de] font-bold text-xs mb-5'>CUSTOMER SERVICE</p>
+            <p className='uppercase text-[#000000de] font-bold text-xs mb-5 whitespace-nowrap'>CUSTOMER SERVICE</p>
             <ul>
               <li className='footer__item'>
                 <a href='#!'>Help Centre</a>
@@ -55,7 +55,7 @@ export default function Footer() {
             </ul>
           </div>
           <div className='col-span-2'>
-            <p className='uppercase text-[#000000de] font-bold text-xs mb-5'>ABOUT SHOPEE</p>
+            <p className='uppercase text-[#000000de] font-bold text-xs mb-5 whitespace-nowrap'>ABOUT SHOPEE</p>
             <ul>
               <li className='footer__item'>
                 <a href='#!'>About Us </a>
@@ -86,9 +86,9 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-          <div className='col-span-2 '>
+          <div className='col-span-4 md:col-span-2 '>
             <div className='mb-4'>
-              <p className='uppercase text-[#000000de] font-bold text-xs mb-5'>PAYMENT</p>
+              <p className='uppercase text-[#000000de] font-bold text-xs mb-5 whitespace-nowrap'>PAYMENT</p>
               <div className='grid grid-cols-footer-brands gap-2 '>
                 {brands.payment.map((payment) => (
                   <div className='col flex items-center justify-center  p-2 bg-white rounded'>
@@ -98,7 +98,7 @@ export default function Footer() {
               </div>
             </div>
             <div>
-              <p className='uppercase text-[#000000de] font-bold text-xs mb-5'>LOGISTIC</p>
+              <p className='uppercase text-[#000000de] font-bold text-xs mb-5 whitespace-nowrap'>LOGISTIC</p>
               <div className='grid grid-cols-footer-brands gap-2 '>
                 {brandsVal.logistics.map((logistic) => (
                   <div className='col flex items-center justify-center  p-2 bg-white rounded'>
@@ -109,7 +109,7 @@ export default function Footer() {
             </div>
           </div>
           <div className='col-span-1'>
-            <p className='uppercase text-[#000000de] font-bold text-xs mb-5'>FOLLOW US</p>
+            <p className='uppercase text-[#000000de] font-bold text-xs mb-5 whitespace-nowrap'>FOLLOW US</p>
             <div className='flex flex-col gap-3'>
               <a href='https://www.facebook.com/ShopeeVN'>
                 <div className='inline-flex group  items-center gap-2'>
@@ -133,12 +133,12 @@ export default function Footer() {
           </div>
           <div className='col-span-2 '>
             <div className='ml-16'>
-              <p className='uppercase text-[#000000de] font-bold text-xs mb-5'>SHOPEE APP DOWNLOAD</p>
+              <p className='uppercase text-[#000000de] font-bold text-xs mb-5 whitespace-nowrap'>SHOPEE APP DOWNLOAD</p>
               <div className='flex gap-3 '>
-                <div className=''>
+                <div className='shrink-0'>
                   <img src={qrCode} alt='' />
                 </div>
-                <div className='flex flex-col gap-1'>
+                <div className='shrink-0 flex flex-col justify-between gap-1'>
                   <a href='https://shopee.vn/web' className='p-1 bg-white rounded-sm shadow-footer-channel'>
                     <img src={appStore} alt='' />
                   </a>
@@ -154,10 +154,10 @@ export default function Footer() {
           </div>
         </div>
         <div className='w-full h-[1px] bg-slate-300 my-10'></div>
-        <div className='content'>
+        <div className='content text-center lg:text-left'>
           <p className='text-[#0000008a] mt-2 text-sm'>
             Country & Region:
-            <span className='inline-flex footer__separate'>
+            <span className='inline-flex footer__separate flex-wrap justify-center lg:justify-normal'>
               <a href='#!'>Singapore</a>
               <a href='#!'>Indonesia</a>
               <a href='#!'>Thailand</a>
@@ -175,16 +175,28 @@ export default function Footer() {
             Hoàng Mạnh Dũng - Shopee Clone - 2024. All rights reserved.
           </p>
           <div className='flex items-center justify-center footer__separate  text-[#0000008a] text-xs uppercase'>
-            <a className='!px-6 ' href='https://help.shopee.vn/portal/4/article/77244'>
+            <a
+              className='!px-1 text-[10px] md:!px-6 whitespace-nowrap'
+              href='https://help.shopee.vn/portal/4/article/77244'
+            >
               PRIVACY POLICY
             </a>
-            <a className='!px-6 ' href='https://help.shopee.vn/portal/4/article/77245'>
+            <a
+              className='!px-1 text-[10px] md:!px-6 whitespace-nowrap'
+              href='https://help.shopee.vn/portal/4/article/77245'
+            >
               TERM OF SERVICE
             </a>
-            <a className='!px-6 ' href='https://help.shopee.vn/portal/4/article/77250'>
+            <a
+              className='!px-1 text-[10px] md:!px-6 whitespace-nowrap'
+              href='https://help.shopee.vn/portal/4/article/77250'
+            >
               SHIPPING POLICY
             </a>
-            <a className='!px-6 ' href='https://help.shopee.vn/portal/4/article/77251'>
+            <a
+              className='!px-1 text-[10px] md:!px-6 whitespace-nowrap'
+              href='https://help.shopee.vn/portal/4/article/77251'
+            >
               VIOLATION
             </a>
           </div>

@@ -173,6 +173,9 @@ button {
   cursor: pointer;
 }
 
+input{
+  outline: none;
+}
 /* TailwindCss */
 .footer__item {
   font-size: 12px;
