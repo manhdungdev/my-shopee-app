@@ -90,8 +90,8 @@ export default function Footer() {
             <div className='mb-4'>
               <p className='uppercase text-[#000000de] font-bold text-xs mb-5 whitespace-nowrap'>PAYMENT</p>
               <div className='grid grid-cols-footer-brands gap-2 '>
-                {brands.payment.map((payment) => (
-                  <div className='col flex items-center justify-center  p-2 bg-white rounded'>
+                {brands.payment.map((payment, index) => (
+                  <div key={index} className='col flex items-center justify-center  p-2 bg-white rounded'>
                     <img src={payment.url} alt='' />
                   </div>
                 ))}
@@ -100,8 +100,8 @@ export default function Footer() {
             <div>
               <p className='uppercase text-[#000000de] font-bold text-xs mb-5 whitespace-nowrap'>LOGISTIC</p>
               <div className='grid grid-cols-footer-brands gap-2 '>
-                {brandsVal.logistics.map((logistic) => (
-                  <div className='col flex items-center justify-center  p-2 bg-white rounded'>
+                {brandsVal.logistics.map((logistic, index) => (
+                  <div key={index} className='col flex items-center justify-center  p-2 bg-white rounded'>
                     <img src={logistic.url} alt='' />
                   </div>
                 ))}
