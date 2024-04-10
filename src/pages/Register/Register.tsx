@@ -2,13 +2,10 @@ import React from 'react'
 import shopeeBg from '../../assets/img/login/login-bg.png'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { getRules } from '~/utils/rules'
+import { Schema, getRules, schema } from '~/utils/rules'
+import { yupResolver } from '@hookform/resolvers/yup'
 
-export interface FormState {
-  email: string
-  password: string
-  confirm_password: string
-}
+type FormState = Schema
 
 export default function Register() {
   const {
@@ -16,13 +13,13 @@ export default function Register() {
     handleSubmit,
     getValues,
     formState: { errors }
-  } = useForm<FormState>()
-  const rules = getRules(getValues)
+  } = useForm<FormState>({
+    resolver: yupResolver(schema)
+  })
 
   const handleSubmitForm = handleSubmit((data) => {
     console.log(data)
   })
-  console.log(errors)
 
   return (
     <div className='bg-[#ee4e2e] py-[60px] md:pb-[150px]'>
@@ -42,7 +39,7 @@ export default function Register() {
                 placeholder='Email'
                 required
                 autoFocus
-                {...register('email', rules.email)}
+                {...register('email')}
               />
               <p className=' mt-1 min-h-5 text-sm font-medium text-red-500'>{errors.email?.message || ''}</p>
             </div>
@@ -56,7 +53,8 @@ export default function Register() {
                 placeholder='••••••••'
                 className='bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 lg:p-2.5 '
                 required
-                {...register('password', rules.password)}
+                {...register('password')}
+                autoComplete='on'
               />
               <p className=' mt-1 min-h-5 text-sm font-medium text-red-500'>{errors.password?.message || ''}</p>
             </div>
@@ -71,7 +69,8 @@ export default function Register() {
                 placeholder='••••••••'
                 className='bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 lg:p-2.5 '
                 required
-                {...register('confirm_password', rules.confirm_password)}
+                autoComplete='on'
+                {...register('confirm_password')}
               />
               <p className=' mt-1 min-h-5 text-sm font-medium text-red-500'>{errors.confirm_password?.message || ''}</p>
             </div>

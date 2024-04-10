@@ -1,8 +1,13 @@
 import { RegisterOptions, UseFormGetValues } from 'react-hook-form'
-import { FormState } from '~/pages/Register/Register'
+import * as yup from 'yup'
 
 type Rules = {
   [key in 'email' | 'password' | 'confirm_password']?: RegisterOptions
+}
+ interface FormState {
+  email: string
+  password: string
+  confirm_password: string
 }
 
 export const getRules = (getValues?: UseFormGetValues<FormState>): Rules => ({
@@ -55,9 +60,35 @@ export const getRules = (getValues?: UseFormGetValues<FormState>): Rules => ({
     validate:
       typeof getValues === 'function'
         ? (value) => {
-            const {password} = getValues()
+            const { password } = getValues()
             return password === value || 'Password is not matched'
           }
         : undefined
   }
 })
+
+export const schema = yup.object({
+  email: yup
+    .string()
+    .required('Please enter your email')
+    .min(5, 'Please input at least 5 characters')
+    .max(150, 'Please input most 150 characters')
+    .email()
+    .matches(
+      /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/,
+      'Email is not valid form'
+    ),
+  password: yup
+    .string()
+    .required('Please enter your password')
+    .min(6, 'Please input at least 6 characters')
+    .max(160, 'Please input most 160 characters'),
+  confirm_password: yup
+    .string()
+    .required('Please enter your password')
+    .min(6, 'Please input at least 6 characters')
+    .max(160, 'Please input most 160 characters')
+    .oneOf([yup.ref('password')], 'Password is not matched')
+})
+
+export type Schema = yup.InferType<typeof schema>
