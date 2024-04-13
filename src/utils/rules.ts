@@ -73,7 +73,6 @@ export const schema = yup.object({
     .required('Please enter your email')
     .min(5, 'Please input at least 5 characters')
     .max(150, 'Please input most 150 characters')
-    .email()
     .matches(
       /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/,
       'Email is not valid form'
