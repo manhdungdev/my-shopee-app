@@ -4,21 +4,54 @@ import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { Schema, getRules, schema } from '~/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+import { registerAccount } from '~/apis/auth.apis'
+import { omit } from 'lodash'
+import { isUnprocessableEntity } from '~/utils/utils'
+import { ResponseAPI } from '~/types/utils.type'
 
-type FormState = Schema
+type FormData = Schema
 
 export default function Register() {
   const {
     register,
     handleSubmit,
     getValues,
+    setError,
     formState: { errors }
-  } = useForm<FormState>({
+  } = useForm({
     resolver: yupResolver(schema)
   })
 
+  const registerAccountMutation = useMutation({
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => registerAccount(body)
+  })
+
   const handleSubmitForm = handleSubmit((data) => {
-    console.log(data)
+    const body = omit(data, ['confirm_password'])
+    registerAccountMutation.mutate(body, {
+      onSuccess: (data) => {
+        console.log(data)
+      },
+      onError: (error) => {
+        if (isUnprocessableEntity<ResponseAPI<Omit<FormData, 'confirm_password'>>>(error)) {
+          const formError = error.response?.data.data
+          if (formError?.email) {
+            setError('email', {
+              message: formError.email,
+              type: 'Server'
+            })
+          }
+
+          if (formError?.password) {
+            setError('password', {
+              message: formError.password,
+              type: 'Server'
+            })
+          }
+        }
+      }
+    })
   })
 
   return (
