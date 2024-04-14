@@ -1,8 +1,20 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import facebook from '../../assets/icon/header-symbol/facebook.svg'
 import instagram from '../../assets/icon/header-symbol/instagram.svg'
+import { FloatingArrow, FloatingPortal, arrow, offset, shift, useFloating } from '@floating-ui/react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Header() {
+  const arrowRef = useRef(null)
+  const [isOpen, setIsOpen] = useState(false)
+
+  const { refs, floatingStyles, context, middlewareData } = useFloating({
+    middleware: [offset(12), shift(), arrow({ element: arrowRef })]
+  })
+  
+  const showPopover = () => setIsOpen(true)
+  const hidePopover = () => setIsOpen(false)
+
   return (
     <header className=' bg-[#ee4d2d]'>
       <div className='w-10/12 md:w-9/12 mx-auto'>
@@ -28,7 +40,7 @@ export default function Header() {
           </div>
           <div className='flex gap-5 text-[13px] font-light text-white'>
             <div className='flex gap-4'>
-              <span className='group flex items-center justify-center gap-2  hover:text-[#ffffffb3] cursor-pointer'>
+              {/* <span className='group flex items-center justify-center gap-2  hover:text-[#ffffffb3] cursor-pointer'>
                 <svg
                   className='group-hover:fill-[#ffffffb3]'
                   xmlns='http://www.w3.org/2000/svg'
@@ -39,8 +51,12 @@ export default function Header() {
                   <path d='M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v25.4c0 45.4-15.5 89.5-43.8 124.9L5.3 377c-5.8 7.2-6.9 17.1-2.9 25.4S14.8 416 24 416H424c9.2 0 17.6-5.3 21.6-13.6s2.9-18.2-2.9-25.4l-14.9-18.6C399.5 322.9 384 278.8 384 233.4V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm0 96c61.9 0 112 50.1 112 112v25.4c0 47.9 13.9 94.6 39.7 134.6H72.3C98.1 328 112 281.3 112 233.4V208c0-61.9 50.1-112 112-112zm64 352H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7s18.7-28.3 18.7-45.3z' />
                 </svg>
                 <p>Notification</p>
-              </span>
-              <span className='group flex items-center justify-center gap-2  hover:text-[#ffffffb3] cursor-pointer'>
+              </span> */}
+
+              <a
+                href='https://help.shopee.vn/portal/4'
+                className='group flex items-center justify-center gap-2  hover:text-[#ffffffb3] cursor-pointer'
+              >
                 <svg
                   className='group-hover:fill-[#ffffffb3]'
                   xmlns='http://www.w3.org/2000/svg'
@@ -50,9 +66,14 @@ export default function Header() {
                 >
                   <path d='M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24V250.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z' />
                 </svg>
-                <p>Notification</p>
-              </span>
-              <span className='group flex items-center justify-center gap-2  hover:text-[#ffffffb3] cursor-pointer'>
+                <p>Help</p>
+              </a>
+              <span
+                className='group flex items-center justify-center gap-2  hover:text-[#ffffffb3] cursor-pointer'
+                ref={refs.setReference}
+                onMouseEnter={showPopover}
+                onMouseLeave={hidePopover}
+              >
                 <svg
                   className='group-hover:fill-[#ffffffb3]'
                   xmlns='http://www.w3.org/2000/svg'
@@ -72,6 +93,29 @@ export default function Header() {
                 >
                   <path d='M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z' />
                 </svg>
+                <FloatingPortal>
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        ref={refs.setFloating}
+                        style={{
+                          ...floatingStyles,
+                          transformOrigin: `${middlewareData.arrow?.x}px top`
+                        }}
+                        // initial={{ opacity: 0, scale: 0 }}
+                        // animate={{ opacity: 1, scale: 1 }}
+                        // exit={{ opacity: 0, scale: 0 }}
+                        // transition={{ ease: 'linear', duration: 2 }}
+                      >
+                        <FloatingArrow ref={arrowRef} context={context} fill='white' width={20} height={10} />
+                        <div className='w-[200px] p3 text-[#000000de] text-sm bg-white'>
+                          <button className='block w-full text-left p-[10px] '>VietNamese</button>
+                          <button className='block w-full text-left p-[10px] '>English</button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </FloatingPortal>
               </span>
             </div>
             <div className='flex items-center gap-2'>
