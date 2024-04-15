@@ -2,6 +2,7 @@ import React, { ElementType, useId, useRef, useState } from 'react'
 import {
   FloatingArrow,
   FloatingPortal,
+  Placement,
   arrow,
   autoUpdate,
   flip,
@@ -20,12 +21,20 @@ import { motion, AnimatePresence } from 'framer-motion'
 interface Props {
   children: React.ReactNode | ((open: boolean) => React.ReactNode)
   renderPopover: React.ReactNode
-  className: string
+  className?: string
   as?: ElementType
   initialOpen?: boolean
+  placement?: Placement
 }
 
-export default function Popover({ children, renderPopover, initialOpen, className, as: Element = 'div' }: Props) {
+export default function Popover({
+  children,
+  renderPopover,
+  initialOpen,
+  className,
+  as: Element = 'div',
+  placement = 'bottom-end'
+}: Props) {
   const arrowRef = useRef(null)
   const [isOpen, setIsOpen] = useState(initialOpen || false)
 
@@ -39,7 +48,8 @@ export default function Popover({ children, renderPopover, initialOpen, classNam
     onOpenChange: setIsOpen,
     middleware: [offset(10), flip(), shift(), arrow({ element: arrowRef })],
     whileElementsMounted: autoUpdate,
-    transform: false
+    transform: false,
+    placement
   })
   const { refs, floatingStyles, context, middlewareData } = data
   const hover = useHover(context, { handleClose: safePolygon() })
