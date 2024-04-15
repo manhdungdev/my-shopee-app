@@ -3,15 +3,18 @@ import facebook from '../../assets/icon/header-symbol/facebook.svg'
 import instagram from '../../assets/icon/header-symbol/instagram.svg'
 import { FloatingArrow, FloatingPortal, arrow, offset, shift, useFloating } from '@floating-ui/react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Popover from '../Popover'
+import { Link } from 'react-router-dom'
 
 export default function Header() {
   const arrowRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
 
   const { refs, floatingStyles, context, middlewareData } = useFloating({
-    middleware: [offset(12), shift(), arrow({ element: arrowRef })]
+    middleware: [offset(12), shift(), arrow({ element: arrowRef })],
+    transform: false
   })
-  
+
   const showPopover = () => setIsOpen(true)
   const hidePopover = () => setIsOpen(false)
 
@@ -68,64 +71,61 @@ export default function Header() {
                 </svg>
                 <p>Help</p>
               </a>
-              <span
-                className='group flex items-center justify-center gap-2  hover:text-[#ffffffb3] cursor-pointer'
-                ref={refs.setReference}
-                onMouseEnter={showPopover}
-                onMouseLeave={hidePopover}
+              <Popover
+                className='group flex items-center justify-center gap-2   cursor-pointer'
+                renderPopover={
+                  <div className='w-[200px] p-1 text-[#000000de] text-sm bg-white before:h-6 before:w-full before:block before:absolute before:top-[-11px] before:left-0'>
+                    <button className='block w-full text-left p-[10px] hover:text-[#ee4d2d] '>VietNamese</button>
+                    <button className='block w-full text-left p-[10px] hover:text-[#ee4d2d] '>English</button>
+                  </div>
+                }
               >
-                <svg
-                  className='group-hover:fill-[#ffffffb3]'
-                  xmlns='http://www.w3.org/2000/svg'
-                  viewBox='0 0 512 512'
-                  fill='white'
-                  height='16px'
-                >
-                  <path d='M352 256c0 22.2-1.2 43.6-3.3 64H163.3c-2.2-20.4-3.3-41.8-3.3-64s1.2-43.6 3.3-64H348.7c2.2 20.4 3.3 41.8 3.3 64zm28.8-64H503.9c5.3 20.5 8.1 41.9 8.1 64s-2.8 43.5-8.1 64H380.8c2.1-20.6 3.2-42 3.2-64s-1.1-43.4-3.2-64zm112.6-32H376.7c-10-63.9-29.8-117.4-55.3-151.6c78.3 20.7 142 77.5 171.9 151.6zm-149.1 0H167.7c6.1-36.4 15.5-68.6 27-94.7c10.5-23.6 22.2-40.7 33.5-51.5C239.4 3.2 248.7 0 256 0s16.6 3.2 27.8 13.8c11.3 10.8 23 27.9 33.5 51.5c11.6 26 20.9 58.2 27 94.7zm-209 0H18.6C48.6 85.9 112.2 29.1 190.6 8.4C165.1 42.6 145.3 96.1 135.3 160zM8.1 192H131.2c-2.1 20.6-3.2 42-3.2 64s1.1 43.4 3.2 64H8.1C2.8 299.5 0 278.1 0 256s2.8-43.5 8.1-64zM194.7 446.6c-11.6-26-20.9-58.2-27-94.6H344.3c-6.1 36.4-15.5 68.6-27 94.6c-10.5 23.6-22.2 40.7-33.5 51.5C272.6 508.8 263.3 512 256 512s-16.6-3.2-27.8-13.8c-11.3-10.8-23-27.9-33.5-51.5zM135.3 352c10 63.9 29.8 117.4 55.3 151.6C112.2 482.9 48.6 426.1 18.6 352H135.3zm358.1 0c-30 74.1-93.6 130.9-171.9 151.6c25.5-34.2 45.2-87.7 55.3-151.6H493.4z' />
-                </svg>
-                <p>English</p>
-                <svg
-                  className='group-hover:fill-[#ffffffb3]'
-                  xmlns='http://www.w3.org/2000/svg'
-                  viewBox='0 0 512 512'
-                  fill='white'
-                  height='10px'
-                >
-                  <path d='M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z' />
-                </svg>
-                <FloatingPortal>
-                  <AnimatePresence>
-                    {isOpen && (
-                      <motion.div
-                        ref={refs.setFloating}
-                        style={{
-                          ...floatingStyles,
-                          transformOrigin: `${middlewareData.arrow?.x}px top`
-                        }}
-                        // initial={{ opacity: 0, scale: 0 }}
-                        // animate={{ opacity: 1, scale: 1 }}
-                        // exit={{ opacity: 0, scale: 0 }}
-                        // transition={{ ease: 'linear', duration: 2 }}
-                      >
-                        <FloatingArrow ref={arrowRef} context={context} fill='white' width={20} height={10} />
-                        <div className='w-[200px] p3 text-[#000000de] text-sm bg-white'>
-                          <button className='block w-full text-left p-[10px] '>VietNamese</button>
-                          <button className='block w-full text-left p-[10px] '>English</button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </FloatingPortal>
-              </span>
+                {(open: boolean) => (
+                  <>
+                    <svg
+                      className={open ? 'fill-[#ffffffb3]' : ''}
+                      xmlns='http://www.w3.org/2000/svg'
+                      viewBox='0 0 512 512'
+                      fill='white'
+                      height='16px'
+                    >
+                      <path d='M352 256c0 22.2-1.2 43.6-3.3 64H163.3c-2.2-20.4-3.3-41.8-3.3-64s1.2-43.6 3.3-64H348.7c2.2 20.4 3.3 41.8 3.3 64zm28.8-64H503.9c5.3 20.5 8.1 41.9 8.1 64s-2.8 43.5-8.1 64H380.8c2.1-20.6 3.2-42 3.2-64s-1.1-43.4-3.2-64zm112.6-32H376.7c-10-63.9-29.8-117.4-55.3-151.6c78.3 20.7 142 77.5 171.9 151.6zm-149.1 0H167.7c6.1-36.4 15.5-68.6 27-94.7c10.5-23.6 22.2-40.7 33.5-51.5C239.4 3.2 248.7 0 256 0s16.6 3.2 27.8 13.8c11.3 10.8 23 27.9 33.5 51.5c11.6 26 20.9 58.2 27 94.7zm-209 0H18.6C48.6 85.9 112.2 29.1 190.6 8.4C165.1 42.6 145.3 96.1 135.3 160zM8.1 192H131.2c-2.1 20.6-3.2 42-3.2 64s1.1 43.4 3.2 64H8.1C2.8 299.5 0 278.1 0 256s2.8-43.5 8.1-64zM194.7 446.6c-11.6-26-20.9-58.2-27-94.6H344.3c-6.1 36.4-15.5 68.6-27 94.6c-10.5 23.6-22.2 40.7-33.5 51.5C272.6 508.8 263.3 512 256 512s-16.6-3.2-27.8-13.8c-11.3-10.8-23-27.9-33.5-51.5zM135.3 352c10 63.9 29.8 117.4 55.3 151.6C112.2 482.9 48.6 426.1 18.6 352H135.3zm358.1 0c-30 74.1-93.6 130.9-171.9 151.6c25.5-34.2 45.2-87.7 55.3-151.6H493.4z' />
+                    </svg>
+                    <p>English</p>
+                    <svg
+                      className={open ? 'fill-[#ffffffb3]' : ''}
+                      xmlns='http://www.w3.org/2000/svg'
+                      viewBox='0 0 512 512'
+                      fill='white'
+                      height='10px'
+                    >
+                      <path d='M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z' />
+                    </svg>
+                  </>
+                )}
+              </Popover>
             </div>
-            <div className='flex items-center gap-2'>
-              <span className='flex items-center justify-center w-6 h-6 rounded-full bg-white'>
-                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512' height='12px'>
-                  <path d='M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464H398.7c-8.9-63.3-63.3-112-129-112H178.3c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z' />
-                </svg>
-              </span>
+
+            <Popover
+              className='flex items-center gap-2 cursor-pointer'
+              as='span'
+              renderPopover={
+                <div className='w-[200px] p-1 text-[#000000de] text-sm bg-white before:h-6 before:w-full before:block before:absolute before:top-[-11px] before:left-0'>
+                  <Link to='/' className='block w-full text-left p-[10px] hover:text-[#ee4d2d] '>
+                    My account
+                  </Link>
+                  <Link to='/' className='block w-full text-left p-[10px] hover:text-[#ee4d2d] '>
+                    My purchase
+                  </Link>
+                  <button className='block w-full text-left p-[10px] hover:text-[#ee4d2d]'>Log out</button>
+                </div>
+              }
+            >
+              <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' height='18px' fill='#ebebeb'>
+                <path d='M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z' />
+              </svg>
               <p>manhdungakp</p>
-            </div>
+            </Popover>
           </div>
         </div>
         <div className='flex items-center py-4 gap-10'>
