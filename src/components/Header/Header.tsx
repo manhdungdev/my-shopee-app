@@ -123,7 +123,7 @@ export default function Header() {
               as='span'
               renderPopover={
                 <div className='w-[200px] p-1 text-[#000000de] text-sm bg-white before:h-6 before:w-full before:block before:absolute before:top-[-11px] before:left-0'>
-                  <Link to='/' className='block w-full text-left p-[10px] hover:text-[#ee4d2d] '>
+                  <Link to='/profile' className='block w-full text-left p-[10px] hover:text-[#ee4d2d] '>
                     My account
                   </Link>
                   <Link to='/' className='block w-full text-left p-[10px] hover:text-[#ee4d2d] '>
@@ -170,7 +170,6 @@ export default function Header() {
             </form>
           </div>
           <Popover
-            initialOpen
             className='relative'
             as='button'
             renderPopover={
@@ -198,7 +197,9 @@ export default function Header() {
                         alt=''
                       />
                     </div>
-                    <p className='truncate text-sm font-medium max-w-[170px] md:max-w-[220px]'>Sách - Hồ Xuân Hương Tiếng Vọng</p>
+                    <p className='truncate text-sm font-medium max-w-[170px] md:max-w-[220px]'>
+                      Sách - Hồ Xuân Hương Tiếng Vọng
+                    </p>
                     <p className='text-sm text-[#ee4d2d] md:ml-auto'>₫167.700</p>
                   </div>
                   <div className='p-[10px] flex items-center justify-between gap-5'>
