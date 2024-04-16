@@ -8,7 +8,7 @@ import { useMutation } from '@tanstack/react-query'
 import { registerAccount } from '~/apis/auth.apis'
 import { omit } from 'lodash'
 import { isUnprocessableEntity } from '~/utils/utils'
-import { ResponseAPI } from '~/types/utils.type'
+import { ErrorResponse } from '~/types/utils.type'
 import { toast } from 'react-toastify'
 
 type FormData = Schema
@@ -35,7 +35,7 @@ export default function Register() {
         toast.success('Sign up successfully')
       },
       onError: (error) => {
-        if (isUnprocessableEntity<ResponseAPI<Omit<FormData, 'confirm_password'>>>(error)) {
+        if (isUnprocessableEntity<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
           const formError = error.response?.data.data
           if (formError?.email) {
             setError('email', {
@@ -59,7 +59,7 @@ export default function Register() {
     <div className='bg-[#ee4e2e] py-[60px] md:pb-[150px]'>
       <div className=' md:w-11/12 lg:w-8/12 mx-auto flex items-center justify-center md:relative'>
         <img className='hidden md:block md:h-[300px] lg:h-[482px]' src={shopeeBg} alt='' />
-        <div className='md:absolute max-w-[300px] md:top-[-5%] md:right-[7%] lg:right-0 lg:top-11 w-full lg:max-w-sm bg-white border border-gray-200 rounded-lg shadow p-6 lg:p-8 '>
+        <div className='md:absolute max-w-[300px] md:top-[-10%] md:right-[7%] lg:right-0 lg:top-11 w-full lg:max-w-sm bg-white border border-gray-200 rounded-lg shadow p-6 lg:p-8 '>
           <form className='space-y-[6px]' action='#' onSubmit={handleSubmitForm} noValidate>
             <h5 className='text-xl font-semibold text-gray-900 mb-5'>Sign up </h5>
             <div>

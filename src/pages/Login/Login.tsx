@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import shopeeBg from '../../assets/img/login/login-bg.png'
 import { Link } from 'react-router-dom'
 import { useForm, useWatch } from 'react-hook-form'
@@ -8,12 +8,14 @@ import { useMutation } from '@tanstack/react-query'
 import { checkLogin } from '~/apis/auth.apis'
 import { toast } from 'react-toastify'
 import { isUnprocessableEntity } from '~/utils/utils'
-import { ResponseAPI } from '~/types/utils.type'
+import { ErrorResponse } from '~/types/utils.type'
+import { AppContext } from '~/contexts/app.contexts'
 
 type FormData = Omit<Schema, 'confirm_password'>
 const valueLogin = schema.omit(['confirm_password'])
 
 export default function Login() {
+  const { setIsAuthenticated } = useContext(AppContext)
   const {
     watch,
     register,
@@ -24,9 +26,6 @@ export default function Login() {
     resolver: yupResolver(valueLogin)
   })
 
-  const value = watch()
-  console.log(value)
-
   const loginMutation = useMutation({
     mutationFn: (body: FormData) => checkLogin(body)
   })
@@ -34,11 +33,11 @@ export default function Login() {
   const onSubmit = handleSubmit((data) => {
     loginMutation.mutate(data, {
       onSuccess: () => {
-        console.log(data)
-        toast.success('Login successfully!')
+        // toast.success('Login successfully!')
+        setIsAuthenticated(true)
       },
       onError: (error) => {
-        if (isUnprocessableEntity<ResponseAPI<FormData>>(error)) {
+        if (isUnprocessableEntity<ErrorResponse<FormData>>(error)) {
           const formError = error.response?.data.data
           if (formError?.email) {
             setError('email', {
@@ -62,7 +61,7 @@ export default function Login() {
     <div className='bg-[#ee4e2e] py-[60px]'>
       <div className=' md:w-11/12 lg:w-8/12 mx-auto flex items-center justify-center md:relative'>
         <img className='hidden md:block md:h-[300px] lg:h-[482px]' src={shopeeBg} alt='' />
-        <div className='md:absolute max-w-[300px] md:top-[-5%] md:right-[7%] lg:right-0 lg:top-11 w-full lg:max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow p-6 lg:p-8 '>
+        <div className='md:absolute max-w-[300px] md:top-[-12%] md:right-[7%] lg:right-0 lg:top-11 w-full lg:max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow p-6 lg:p-8 '>
           <form className='space-y-4' action='#' onSubmit={onSubmit} noValidate>
             <h5 className='text-xl font-medium text-gray-900 '>Sign in </h5>
             <div>
