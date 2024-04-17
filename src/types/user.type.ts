@@ -1,16 +1,13 @@
+type Role = 'User' | 'Admin'
 export interface User {
   _id: string
-  images: string[]
-  price: number
-  rating: number
-  price_before_discount: number
-  quantity: number
-  sold: number
-  view: number
+  roles: Role[]
+  email: string
   name: string
-  description: string
-  category: string
-  image: string
+  date_of_birth: null
+  address: string
+  avatar?: string
+  phone: string
   createdAt: string
   updatedAt: string
 }
