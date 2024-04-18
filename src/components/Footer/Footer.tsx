@@ -14,7 +14,7 @@ export default function Footer() {
   const [urlList, setUrlList] = useState(brandsVal)
   return (
     <footer className='pt-11 pb-4  md:pb-9 bg-[#f5f5f5]'>
-      <div className=' w-10/12 md:w-9/12 mx-auto'>
+      <div className=' w-10/12 mx-auto'>
         <div className='  grid grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-3 md:gap-6 lg:gap-3'>
           <div className='col-span-2'>
             <p className='uppercase text-[#000000de] font-bold text-xs mb-5 whitespace-nowrap'>CUSTOMER SERVICE</p>

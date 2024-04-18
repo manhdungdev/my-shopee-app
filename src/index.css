@@ -173,14 +173,16 @@ button {
   cursor: pointer;
 }
 
-input{
+input,
+select,
+textarea button {
   outline: none;
 }
 /* TailwindCss */
 .footer__item {
   font-size: 12px;
   margin-bottom: 12px;
-  &:hover > a {
+  & a:hover {
     color: red;
     text-decoration: underline;
     text-underline-offset: 3px;
@@ -188,7 +190,6 @@ input{
 }
 
 .footer__separate {
- 
   a {
     display: inline-block;
     padding: 4px 8px;
@@ -197,5 +198,3 @@ input{
     border-left: 1px solid rgba(0, 0, 0, 0.2);
   }
 }
-
-
