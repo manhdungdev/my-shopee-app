@@ -4,7 +4,7 @@ import * as yup from 'yup'
 type Rules = {
   [key in 'email' | 'password' | 'confirm_password']?: RegisterOptions
 }
- interface FormState {
+interface FormState {
   email: string
   password: string
   confirm_password: string

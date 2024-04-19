@@ -15,7 +15,7 @@ import { AppContext } from '~/contexts/app.contexts'
 type FormData = Schema
 
 export default function Register() {
-  const {setIsAuthenticated} = useContext(AppContext)
+  const { setIsAuthenticated } = useContext(AppContext)
   const navigate = useNavigate()
   const {
     register,
