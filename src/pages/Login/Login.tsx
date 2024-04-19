@@ -5,11 +5,12 @@ import { useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Schema, schema } from '~/utils/rules'
 import { useMutation } from '@tanstack/react-query'
-import { checkLogin } from '~/apis/auth.apis'
+// import authApi from '~/apis/auth.apis'
 import { toast } from 'react-toastify'
 import { isUnprocessableEntity } from '~/utils/utils'
 import { ErrorResponse } from '~/types/utils.type'
 import { AppContext } from '~/contexts/app.contexts'
+import  authApi  from '~/apis/auth.apis'
 
 type FormData = Omit<Schema, 'confirm_password'>
 const valueLogin = schema.omit(['confirm_password'])
@@ -27,14 +28,13 @@ export default function Login() {
   })
 
   const loginMutation = useMutation({
-    mutationFn: (body: FormData) => checkLogin(body)
+    mutationFn: (body: FormData) => authApi.checkLogin(body)
   })
 
 
   const onSubmit = handleSubmit((data) => {
     loginMutation.mutate(data, {
       onSuccess: (data) => {
-        // console.log(data)
         // toast.success('Login successfully!')
         setIsAuthenticated(true)
         setProfile(data.data.data.user)

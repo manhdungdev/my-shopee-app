@@ -33,9 +33,7 @@ class Http {
     this.instance.interceptors.response.use(
       (response) => {
         const { url } = response.config
-        console.log(response)
         if (url === path.login) {
-          console.log(response)
           const data = response.data as AuthResponse
           this.access_token = data.data.access_token
           setAccsesTokenToLS(this.access_token)

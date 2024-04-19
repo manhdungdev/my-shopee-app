@@ -15,10 +15,8 @@ export default function SortProductList() {
           Top Sales
         </button>
 
-        <select className='w-[200px] py-1.5 px-2 text-sm font-normal text-black/80 cursor-pointer'>
-          <option value='price:' selected>
-            Price
-          </option>
+        <select defaultValue='' className='w-[200px] py-1.5 px-2 text-sm font-normal text-black/80 cursor-pointer'>
+          <option value='price:'>Price</option>
           <option value='price:asc'>Price: Low to High</option>
           <option value='price:desc'>Price: High to Low</option>
         </select>

@@ -7,18 +7,19 @@ export default function AsideFilter() {
     <div>
       <Link to={path.home} className='flex items-center font-bold text-black/80'>
         <svg viewBox='0 0 12 10' className='h-3 mr-3'>
-          <g fill-rule='evenodd' stroke='none' stroke-width='1'>
+          <g fillRule='evenodd' stroke='none' strokeWidth={1}>
             <g transform='translate(-373 -208)'>
               <g transform='translate(155 191)'>
                 <g transform='translate(218 17)'>
-                  <path d='m0 2h2v-2h-2zm4 0h7.1519633v-2h-7.1519633z'></path>
-                  <path d='m0 6h2v-2h-2zm4 0h7.1519633v-2h-7.1519633z'></path>
-                  <path d='m0 10h2v-2h-2zm4 0h7.1519633v-2h-7.1519633z'></path>
+                  <path d='m0 2h2v-2h-2zm4 0h7.1519633v-2h-7.1519633z' />
+                  <path d='m0 6h2v-2h-2zm4 0h7.1519633v-2h-7.1519633z' />
+                  <path d='m0 10h2v-2h-2zm4 0h7.1519633v-2h-7.1519633z' />
                 </g>
               </g>
             </g>
           </g>
         </svg>
+
         <span>All categories</span>
       </Link>
       <div className='my-[15px] h-[1px] w-full bg-gray-300' />
@@ -41,16 +42,9 @@ export default function AsideFilter() {
         </li>
       </ul>
       <Link to={path.home} className='flex items-center font-bold text-black/80 mt-8'>
-        <svg enable-background='new 0 0 15 15' viewBox='0 0 15 15' x='0' y='0' className='h-3 mr-3'>
+        <svg viewBox='0 0 15 15' x='0' y='0' className='h-3 mr-3'>
           <g>
-            <polyline
-              fill='none'
-              stroke='black'
-              points='5.5 13.2 5.5 5.8 1.5 1.2 13.5 1.2 9.5 5.8 9.5 10.2'
-              stroke-linecap='round'
-              stroke-linejoin='round'
-              stroke-miterlimit='10'
-            ></polyline>
+            <polyline fill='none' stroke='black' points='5.5 13.2 5.5 5.8 1.5 1.2 13.5 1.2 9.5 5.8 9.5 10.2'></polyline>
           </g>
         </svg>
         <span>SEARCH FILTER</span>
