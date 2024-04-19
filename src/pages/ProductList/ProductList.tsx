@@ -1,19 +1,41 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { isUndefined, omitBy } from 'lodash'
 import React, { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import productApi from '~/apis/product.api'
 import AsideFilter from '~/components/AsideFilter'
 import Pagination from '~/components/Pagination'
 import Product from '~/components/Product'
 import SortProductList from '~/components/SortProductList'
+import useQueryParams from '~/hooks/useQueryParams'
 import { ProductConfig } from '~/types/product.type'
 
+export type QueryConfig = {
+  [key in keyof ProductConfig]: string
+}
+
 export default function ProductList() {
-  const searchParams = useSearchParams()
+  const queryParams = useQueryParams()
+  const queryConfig: QueryConfig = omitBy(
+    {
+      page: queryParams.page || '1',
+      limit: queryParams.limit || '10',
+      sort_by: queryParams.sort_by,
+      order: queryParams.order,
+      exclude: queryParams.exclude,
+      rating_filter: queryParams.rating_filter,
+      price_max: queryParams.price_max,
+      price_min: queryParams.price_min,
+      name: queryParams.name,
+      category: queryParams.category
+    },
+    isUndefined
+  )
+  console.log(queryConfig)
   const [page, setPage] = useState(1)
   const { data } = useQuery({
-    queryKey: ['products', searchParams],
-    queryFn: () => productApi.getProducts(searchParams as ProductConfig)
+    queryKey: ['products', queryConfig],
+    queryFn: () => productApi.getProducts(queryConfig as ProductConfig),
+    placeholderData: keepPreviousData
   })
   return (
     <main className='bg-[#f5f5f5] pt-[30px] pb-[60px] border-b-4 border-solid border-[#ee4d2d]'>
@@ -24,15 +46,18 @@ export default function ProductList() {
           </div>
           <div className='col-span-10'>
             <SortProductList />
-            <div className='mt-6 grid grid-cols-5 gap-3'>
-              {data &&
-                data.data.data.products.map((product) => (
-                  <div className='col' key={product._id}>
-                    <Product product={product} />
-                  </div>
-                ))}
-            </div>
-            <Pagination page={page} setPage={setPage} pageSize={20} />
+            {data && (
+              <>
+                <div className='mt-6 grid grid-cols-5 gap-3'>
+                  {data.data.data.products.map((product) => (
+                    <div className='col' key={product._id}>
+                      <Product product={product} />
+                    </div>
+                  ))}
+                </div>
+                <Pagination queryConfig={queryConfig} pageSize={data.data.data.pagination.page_size} />
+              </>
+            )}
           </div>
         </div>
       </div>
