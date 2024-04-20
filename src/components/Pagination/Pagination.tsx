@@ -55,15 +55,7 @@ export default function Pagination({ queryConfig, pageSize }: Props) {
         } else if (page >= pageSize - RANGE * 2 && currentPage > RANGE && currentPage < page - RANGE) {
           return renderBeforeDot(currentPage)
         }
-        //
-        // if (currentPage > page + RANGE && currentPage < pageSize - RANGE + 1) {
-        //   return renderAfterDot(index)
-        // }
-        // if (page > RANGE * 2 + 1) {
-        //   if (currentPage < page - RANGE && currentPage > RANGE) {
-        //     return renderBeforeDot(currentPage)
-        //   }
-        // }
+
         return (
           <Link
             to={{

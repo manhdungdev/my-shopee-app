@@ -6,6 +6,7 @@ import AsideFilter from '~/components/AsideFilter'
 import Pagination from '~/components/Pagination'
 import Product from '~/components/Product'
 import SortProductList from '~/components/SortProductList'
+import { sortBy } from '~/constants/product'
 import useQueryParams from '~/hooks/useQueryParams'
 import { ProductConfig } from '~/types/product.type'
 
@@ -19,7 +20,7 @@ export default function ProductList() {
     {
       page: queryParams.page || '1',
       limit: queryParams.limit || '10',
-      sort_by: queryParams.sort_by,
+      sort_by: queryParams.sort_by || sortBy.createdAt,
       order: queryParams.order,
       exclude: queryParams.exclude,
       rating_filter: queryParams.rating_filter,
@@ -45,9 +46,9 @@ export default function ProductList() {
             <AsideFilter />
           </div>
           <div className='col-span-10'>
-            <SortProductList />
             {data && (
               <>
+                <SortProductList queryConfig={queryConfig} pageSize={data.data.data.pagination.page_size} />
                 <div className='mt-6 grid grid-cols-5 gap-3'>
                   {data.data.data.products.map((product) => (
                     <div className='col' key={product._id}>
