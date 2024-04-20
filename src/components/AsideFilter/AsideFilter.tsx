@@ -1,12 +1,39 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import { path } from '~/constants/path'
+import { QueryConfig } from '~/pages/ProductList/ProductList'
+import { Category } from '~/types/category.type'
+import { Product } from '~/types/product.type'
 
-export default function AsideFilter() {
+interface Props {
+  queryConfig: QueryConfig
+  categories: Category[]
+  products: Product[]
+}
+
+export default function AsideFilter({ categories, queryConfig, products }: Props) {
+  const navigate = useNavigate()
+  console.log('products', products)
+
+  const { category } = queryConfig
+
+  useEffect(() => {
+    if (products.length === 0) {
+      navigate({
+        pathname: path.home,
+        search: createSearchParams({
+          ...queryConfig,
+          page: '1'
+        }).toString()
+      })
+    }
+  }, [products, ])
+
+  // console.log(category, categories)
   return (
     <div>
-      <Link to={path.home} className='flex items-center font-bold text-black/80'>
-        <svg viewBox='0 0 12 10' className='h-3 mr-3'>
+      <Link to={path.home} className={`flex items-center font-bold  ${!category ? 'text-[#ee4d2d]' : 'text-black/80'}`}>
+        <svg viewBox='0 0 12 10' className='h-3 mr-3' fill={`${!category ? '#ee4d2d' : ''}`}>
           <g fillRule='evenodd' stroke='none' strokeWidth={1}>
             <g transform='translate(-373 -208)'>
               <g transform='translate(155 191)'>
@@ -24,22 +51,30 @@ export default function AsideFilter() {
       </Link>
       <div className='my-[15px] h-[1px] w-full bg-gray-300' />
       <ul>
-        <li>
-          <Link to={path.home} className='relative flex items-center px-3 py-2 text-[#ee4d2d] font-bold text-sm'>
-            <svg viewBox='0 0 4 7' className='absolute left-0 h-2 fill-red-500'>
-              <polygon points='4 3.5 0 0 0 7'></polygon>
-            </svg>
-            <span>Consumer Electronics</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            to={path.home}
-            className='relative flex items-center px-3 py-2 font-medium text-sm hover:text-[#ee4d2d]'
-          >
-            <span>Wearable Devices</span>
-          </Link>
-        </li>
+        {categories.map((categoryItem) => {
+          const isActive = categoryItem._id === category
+          return (
+            <li key={categoryItem._id}>
+              <Link
+                to={{
+                  pathname: path.home,
+                  search: createSearchParams({
+                    ...queryConfig,
+                    category: categoryItem._id
+                  }).toString()
+                }}
+                className={`relative flex items-center px-3 py-2 text-sm ${isActive ? 'text-[#ee4d2d] font-bold' : ''}`}
+              >
+                {isActive && (
+                  <svg viewBox='0 0 4 7' className='absolute left-0 h-2 fill-red-500'>
+                    <polygon points='4 3.5 0 0 0 7'></polygon>
+                  </svg>
+                )}
+                <span>{categoryItem.name}</span>
+              </Link>
+            </li>
+          )
+        })}
       </ul>
       <Link to={path.home} className='flex items-center font-bold text-black/80 mt-8'>
         <svg viewBox='0 0 15 15' x='0' y='0' className='h-3 mr-3'>

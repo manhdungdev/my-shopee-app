@@ -19,7 +19,7 @@ export interface Product {
 }
 
 export interface ProductList {
-  products: Product[]
+  products: Product[] 
   pagination: {
     page: number
     limit: number
