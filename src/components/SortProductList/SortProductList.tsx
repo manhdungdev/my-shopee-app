@@ -35,7 +35,6 @@ export default function SortProductList({ queryConfig, pageSize }: Props) {
   }
 
   const handleSortPrice = (orderValue: string) => {
-    console.log(orderValue)
     if (orderValue) {
       navigate({
         pathname: path.home,

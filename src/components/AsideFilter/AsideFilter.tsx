@@ -4,6 +4,12 @@ import { path } from '~/constants/path'
 import { QueryConfig } from '~/pages/ProductList/ProductList'
 import { Category } from '~/types/category.type'
 import { Product } from '~/types/product.type'
+import InputNumber from '../InputNumber'
+import { Controller, useForm } from 'react-hook-form'
+import { Schema, schema } from '~/utils/rules'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { NoUndefinedField } from '~/utils/utils'
+import { ObjectSchema } from 'yup'
 
 interface Props {
   queryConfig: QueryConfig
@@ -11,10 +17,46 @@ interface Props {
   products: Product[]
 }
 
+type FormData = NoUndefinedField<Pick<Schema, 'price_max' | 'price_min'>>
+
+const priceSchema = schema.pick(['price_min', 'price_max'])
+
 export default function AsideFilter({ categories, queryConfig, products }: Props) {
   const navigate = useNavigate()
-  console.log('products', products)
+  const {
+    trigger,
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors }
+  } = useForm<FormData>({
+    defaultValues: {
+      price_min: '',
+      price_max: ''
+    },
+    resolver: yupResolver<FormData>(priceSchema as ObjectSchema<FormData>),
+    shouldFocusError: false
+  })
 
+  const onSubmit = handleSubmit(
+    (data) => {
+      navigate({
+        pathname: path.home,
+        search: createSearchParams({
+          ...queryConfig,
+          price_max: data.price_max,
+          price_min: data.price_min
+        }).toString()
+      })
+    },
+    (err) => {
+      console.log(err)
+      // err.price_max.ref.focus()
+    }
+  )
+
+  const value = watch()
+  console.log(value)
   const { category } = queryConfig
 
   useEffect(() => {
@@ -27,7 +69,7 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
         }).toString()
       })
     }
-  }, [products, ])
+  }, [products, navigate, queryConfig])
 
   // console.log(category, categories)
   return (
@@ -86,24 +128,50 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
       </Link>
       <div className='my-[10px] h-[1px] w-full bg-gray-300' />
       <p className='py-[10px] font-normal text-sm'>Price Range</p>
-      <form action='' className=' mt-[10px] text-sm'>
+      <form action='' className=' mt-[10px] text-sm' onSubmit={onSubmit}>
         <div className='flex justify-between items-center  gap-[10px] '>
-          <input
-            type='text'
-            className='w-full px-2 py-[5px] placeholder:text-xs placeholder:color-black/80'
-            placeholder='₫ MIN'
+          <Controller
+            control={control}
+            name='price_min'
+            render={({ field }) => {
+              return (
+                <InputNumber
+                  type='text'
+                  placeholder='₫ MIN'
+                  onChange={(event) => {
+                    field.onChange(event)
+                    trigger('price_max')
+                  }}
+                  value={field.value}
+                  ref={field.ref}
+                />
+              )
+            }}
           />
           <span className='w-[10px] h-[1px] bg-slate-500 block shrink-0'></span>
-          <input
-            type='text'
-            className='w-full px-2 py-[5px] placeholder:text-xs placeholder:color-black/80'
-            placeholder='₫ MAX'
+          <Controller
+            control={control}
+            name='price_max'
+            render={({ field }) => {
+              return (
+                <InputNumber
+                  type='text'
+                  placeholder='₫ MAX'
+                  onChange={(event) => {
+                    field.onChange(event)
+                    trigger('price_max')
+                  }}
+                  value={field.value}
+                  ref={field.ref}
+                />
+              )
+            }}
           />
         </div>
-
+        <p className='m-1 min-h-5 text-sm font-medium text-red-500 text-center'>{errors.price_max?.message}</p>
         <button
-          type='button'
-          className='mt-5 w-full uppercase  text-white bg-[#f05d40] hover:opacity-90  font-medium text-sm px-5 py-1.5 '
+          type='submit'
+          className=' w-full uppercase  text-white bg-[#f05d40] hover:opacity-90  font-medium text-sm px-5 py-1.5 '
         >
           Apply
         </button>

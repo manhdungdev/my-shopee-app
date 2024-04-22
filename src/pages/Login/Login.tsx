@@ -12,8 +12,8 @@ import { ErrorResponse } from '~/types/utils.type'
 import { AppContext } from '~/contexts/app.contexts'
 import authApi from '~/apis/auth.apis'
 
-type FormData = Omit<Schema, 'confirm_password'>
-const valueLogin = schema.omit(['confirm_password'])
+type FormData = Pick<Schema, 'email' | 'password'>
+const loginSchema = schema.pick(['email', 'password'])
 
 export default function Login() {
   const { setIsAuthenticated, setProfile } = useContext(AppContext)
@@ -24,7 +24,7 @@ export default function Login() {
     setError,
     formState: { errors }
   } = useForm({
-    resolver: yupResolver(valueLogin)
+    resolver: yupResolver(loginSchema)
   })
 
   const loginMutation = useMutation({

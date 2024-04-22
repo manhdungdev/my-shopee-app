@@ -67,6 +67,7 @@ export const getRules = (getValues?: UseFormGetValues<FormState>): Rules => ({
   }
 })
 
+
 export const schema = yup.object({
   email: yup
     .string()
@@ -87,7 +88,31 @@ export const schema = yup.object({
     .required('Please enter your password')
     .min(6, 'Please input at least 6 characters')
     .max(160, 'Please input most 160 characters')
-    .oneOf([yup.ref('password')], 'Password is not matched')
+    .oneOf([yup.ref('password')], 'Password is not matched'),
+  price_min: yup.string().test({
+    name: 'price_min-not-valid',
+    message: 'Range of price is not valid',
+    test: function (value) {
+      const { price_max } = this.parent as { price_min: string; price_max: string }
+      const price_min = value
+      if (price_min !== '' && price_max !== '') {
+        return Number(price_min) <= Number(price_max)
+      }
+      return price_min !== '' || price_max !== ''
+    }
+  }),
+  price_max: yup.string().test({
+    name: 'price_max-not-valid',
+    message: 'Range of price is not valid',
+    test: function (value) {
+      const { price_min } = this.parent as { price_min: string; price_max: string }
+      const price_max = value
+      if (price_min !== '' && price_max !== '') {
+        return Number(price_min) <= Number(price_max)
+      }
+      return price_min !== '' || price_max !== ''
+    }
+  })
 })
 
 export type Schema = yup.InferType<typeof schema>

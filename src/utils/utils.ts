@@ -13,3 +13,7 @@ export const formatCurrenyToSocialStyle = (currency: number) =>
     .format(currency)
     .replace('.', ',')
     .toLowerCase()
+
+export type NoUndefinedField<T> = {
+  [P in keyof T]-?: NoUndefinedField<NonNullable<T[P]>>
+}

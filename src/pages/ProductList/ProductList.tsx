@@ -40,7 +40,6 @@ export default function ProductList() {
     queryFn: () => productApi.getProducts(queryConfig as ProductConfig),
     placeholderData: keepPreviousData
   })
-  console.log(products.data?.data.data.products)
 
   const categories = useQuery({
     queryKey: ['categories', queryConfig],
