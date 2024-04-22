@@ -10,6 +10,8 @@ import { Schema, schema } from '~/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { NoUndefinedField } from '~/utils/utils'
 import { ObjectSchema } from 'yup'
+import RatingStars from '../RatingStars'
+import { omit } from 'lodash'
 
 interface Props {
   queryConfig: QueryConfig
@@ -70,6 +72,13 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
       })
     }
   }, [products, navigate, queryConfig])
+
+  const handeClearSort = () => {
+    navigate({
+      pathname: path.home,
+     search: createSearchParams(omit(queryConfig, ['price_max', 'price_min', 'rating_filter', 'category'])).toString()
+    })
+  }
 
   // console.log(category, categories)
   return (
@@ -177,99 +186,11 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
         </button>
       </form>
       <div className='my-[20px] h-[1px] w-full bg-gray-300' />
-      <p className='py-[10px] font-normal text-sm'>Rating</p>
-      <ul>
-        <li>
-          <Link to='' className='ml-3 flex gap-1'>
-            {Array(5)
-              .fill(0)
-              .map((_, index) => (
-                <svg key={index} viewBox='0 0 9.5 8' className='h-[14px]'>
-                  <defs>
-                    <linearGradient id='ratingStarGradient' x1='50%' x2='50%' y1='0%' y2='100%'>
-                      <stop offset={0} stopColor='#ffca11' />
-                      <stop offset={1} stopColor='#ffad27' />
-                    </linearGradient>
-                    <polygon
-                      id='ratingStar'
-                      points='14.910357 6.35294118 12.4209136 7.66171903 12.896355 4.88968305 10.8823529 2.92651626 13.6656353 2.52208166 14.910357 0 16.1550787 2.52208166 18.9383611 2.92651626 16.924359 4.88968305 17.3998004 7.66171903'
-                    />
-                  </defs>
-                  <g fill='url(#ratingStarGradient)' fillRule='evenodd' stroke='none' strokeWidth={1}>
-                    <g transform='translate(-876 -1270)'>
-                      <g transform='translate(155 992)'>
-                        <g transform='translate(600 29)'>
-                          <g transform='translate(10 239)'>
-                            <g transform='translate(101 10)'>
-                              <use stroke='#ffa727' strokeWidth='.5' xlinkHref='#ratingStar' />
-                            </g>
-                          </g>
-                        </g>
-                      </g>
-                    </g>
-                  </g>
-                </svg>
-              ))}
-          </Link>
-        </li>
-        <li className='mt-3'>
-          <Link to='' className='ml-3 flex gap-1'>
-            {Array(5)
-              .fill(0)
-              .map((_, index) => {
-                if (index !== 4) {
-                  return (
-                    <svg key={index} viewBox='0 0 9.5 8' className='h-[14px]'>
-                      <defs>
-                        <linearGradient id='ratingStarGradient' x1='50%' x2='50%' y1='0%' y2='100%'>
-                          <stop offset={0} stopColor='#ffca11' />
-                          <stop offset={1} stopColor='#ffad27' />
-                        </linearGradient>
-                        <polygon
-                          id='ratingStar'
-                          points='14.910357 6.35294118 12.4209136 7.66171903 12.896355 4.88968305 10.8823529 2.92651626 13.6656353 2.52208166 14.910357 0 16.1550787 2.52208166 18.9383611 2.92651626 16.924359 4.88968305 17.3998004 7.66171903'
-                        />
-                      </defs>
-                      <g fill='url(#ratingStarGradient)' fillRule='evenodd' stroke='none' strokeWidth={1}>
-                        <g transform='translate(-876 -1270)'>
-                          <g transform='translate(155 992)'>
-                            <g transform='translate(600 29)'>
-                              <g transform='translate(10 239)'>
-                                <g transform='translate(101 10)'>
-                                  <use stroke='#ffa727' strokeWidth='.5' xlinkHref='#ratingStar' />
-                                </g>
-                              </g>
-                            </g>
-                          </g>
-                        </g>
-                      </g>
-                    </svg>
-                  )
-                }
-                return (
-                  <svg key={index} viewBox='0 0 30 30' className='h-[14px]'>
-                    <defs>
-                      <linearGradient id='star__hollow' x1='50%' x2='50%' y1='0%' y2='99.0177926%'>
-                        <stop offset='0%' stopColor='#FFD211' />
-                        <stop offset='100%' stopColor='#FFAD27' />
-                      </linearGradient>
-                    </defs>
-                    <path
-                      fill='none'
-                      fillRule='evenodd'
-                      stroke='url(#star__hollow)'
-                      strokeWidth={2}
-                      d='M23.226809 28.390899l-1.543364-9.5505903 6.600997-6.8291523-9.116272-1.4059447-4.01304-8.63019038-4.013041 8.63019038-9.116271 1.4059447 6.600997 6.8291523-1.543364 9.5505903 8.071679-4.5038874 8.071679 4.5038874z'
-                    />
-                  </svg>
-                )
-              })}
-            <span className='text-sm font-medium ml-[5px] text-black/80'>& UP</span>
-          </Link>
-        </li>
-      </ul>
+      <p className='pt-[10px] font-normal text-sm'>Rating</p>
+      <RatingStars queryConfig={queryConfig} />
       <div className='my-[10px] h-[1px] w-full bg-gray-300' />
       <button
+      onClick={handeClearSort}
         type='button'
         className='mt-2.5 w-full uppercase  text-white bg-[#f05d40] hover:opacity-90  font-medium text-sm px-5 py-1.5 '
       >
