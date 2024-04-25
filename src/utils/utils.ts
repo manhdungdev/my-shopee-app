@@ -14,6 +14,9 @@ export const formatCurrenyToSocialStyle = (currency: number) =>
     .replace('.', ',')
     .toLowerCase()
 
+export const saleRating = (priceBefore: number, priceSale: number) =>
+  Math.round(((priceBefore - priceSale) / priceBefore) * 100) + '%'
+
 export type NoUndefinedField<T> = {
   [P in keyof T]-?: NoUndefinedField<NonNullable<T[P]>>
 }
