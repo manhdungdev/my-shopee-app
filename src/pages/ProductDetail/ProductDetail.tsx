@@ -1,75 +1,114 @@
 import { useQuery } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
 // import DOMPurify from 'dompurify'
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import productApi from '~/apis/product.api'
 import InputNumber from '~/components/InputNumber'
 import ProductRating from '~/components/ProductRating'
+import { Product } from '~/types/product.type'
 import { formatCurreny, formatCurrenyToSocialStyle, saleRating } from '~/utils/utils'
 
 export default function ProductDetail() {
   const { id } = useParams()
-  const productDetai = useQuery({
+
+  const productDetailData = useQuery({
     queryKey: ['productDetail', id],
     queryFn: () => productApi.getProductDetail(id as string)
   })
+  const product = productDetailData.data?.data.data
 
-  const productDetailData = productDetai.data?.data.data
-  if (!productDetailData) return null
+  const [currentIndexImages, setCurrentIndexImages] = useState([0, 5])
+  const [activeImage, setActiveImage] = useState('')
+  const currentImages = useMemo(
+    () => (product ? product.images.slice(...currentIndexImages) : []),
+    [product, currentIndexImages]
+  )
+  useEffect(() => {
+    if (product && product.images.length > 0) {
+      setActiveImage(product.images[0])
+    }
+  }, [product])
+
+  const changeActiveImage = (img: string) => setActiveImage(img)
+  const next = () => {
+    if (currentIndexImages[1] < (product as Product).images.length) {
+      setCurrentIndexImages((prev) => [prev[0] + 1, prev[1] + 1])
+    }
+  }
+
+  const prev = () => {
+    if (currentIndexImages[0] > 0) {
+      setCurrentIndexImages((prev) => [prev[0] - 1, prev[1] - 1])
+    }
+  }
+
+  if (!product) return null
   return (
     <div className='bg-[#f5f5f5] pt-[30px] pb-[60px] border-b-4 border-solid border-[#ee4d2d]'>
       <div className='w-11/12 md:w-10/12 mx-auto'>
         <div className='grid grid-cols-12 gap-4 p-6 bg-white rounded-sm'>
           <div className='col-span-5'>
             <div className='relative w-full pt-[100%]'>
-              <img className='absolute w-full h-full top-0 left-0' src={productDetailData?.image} alt='' />
+              <img className='absolute w-full h-full top-0 left-0' src={activeImage} alt='' />
             </div>
             <div className='relative grid grid-cols-5 gap-1 mt-3'>
-              <button className='z-10 absolute top-1/2 -translate-y-1/2 -translate-x-1/2  left-0 p-2 flex items-center rounded-full bg-[#dadada] '>
-                <svg fill='white' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512' height='20px' width='20px'>
-                  <path d='M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z' />
-                </svg>
-              </button>
-              {productDetailData.images.slice(0, 5).map((img, index) => (
-                <div key={index} className='relative w-full pt-[100%]'>
-                  <img className='absolute w-full h-full top-0 left-0' src={img} alt='' />
-                </div>
-              ))}
-              <button className='z-10 absolute top-1/2 -translate-y-1/2 translate-x-1/2 right-0 p-2 flex items-center rounded-full bg-[#dadada] '>
-                <svg fill='white' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512' height='20px' width='20px'>
-                  <path d='M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z' />
-                </svg>
-              </button>
+              {currentIndexImages[0] !== 0 && (
+                <button
+                  className='z-10 absolute top-1/2 -translate-y-1/2 -translate-x-1/2  left-0 p-2 flex items-center rounded-full bg-[#dadada] '
+                  onClick={prev}
+                >
+                  <svg fill='white' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512' height='20px' width='20px'>
+                    <path d='M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z' />
+                  </svg>
+                </button>
+              )}
+              {currentImages.map((img, index) => {
+                const isActive = img === activeImage
+                return (
+                  <div key={index} className='relative w-full pt-[100%]' onMouseEnter={() => changeActiveImage(img)}>
+                    <img className='absolute w-full h-full top-0 left-0' src={img} alt='' />
+                    {isActive && <div className='absolute inset-0 border-2 border-solid border-red-500'></div>}
+                  </div>
+                )
+              })}
+              {currentIndexImages[1] !== product.images.length && (
+                <button
+                  className='z-10 absolute top-1/2 -translate-y-1/2 translate-x-1/2 right-0 p-2 flex items-center rounded-full bg-[#dadada]'
+                  onClick={next}
+                >
+                  <svg fill='white' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512' height='20px' width='20px'>
+                    <path d='M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z' />
+                  </svg>
+                </button>
+              )}
             </div>
           </div>
           <div className='col-span-7'>
             <div className='p-5'>
-              <p className='text-black/80 font-medium text-xl uppercase'>{productDetailData.name}</p>
+              <p className='text-black/80 font-medium text-xl uppercase'>{product.name}</p>
               <div className='flex items-center mt-[10px]'>
                 <div className='flex items-center gap-2'>
-                  <span className='text-[#d0011b] underline underline-offset-2 font-normal'>
-                    {productDetailData.rating}
-                  </span>
-                  <ProductRating rating={productDetailData.rating} classNameCustom='h-3 fill-[#d0011b]' />
+                  <span className='text-[#d0011b] underline underline-offset-2 font-normal'>{product.rating}</span>
+                  <ProductRating rating={product.rating} classNameCustom='h-3 fill-[#d0011b]' />
                 </div>
                 <span className='w-[1px] h-6 bg-slate-300 mx-4'></span>
                 <p className='flex items-center'>
-                  <span>{formatCurrenyToSocialStyle(productDetailData.sold)}</span>
+                  <span>{formatCurrenyToSocialStyle(product.sold)}</span>
                   <span className='text-[#767676] text-sm ml-[6px]'>Sold</span>
                 </p>
               </div>
               <div className='py-4 px-5 mt-[10px] flex items-center gap-5 bg-[#fafafa]'>
                 <p className='relative flex items-center text-[#929292] before:absolute before:left-0 before:w-full before:h-[2px] before:bg-[#929292]'>
                   <span className='text-xs underline underline-offset-1 mr-[2px]'>đ</span>
-                  <span>{formatCurreny(productDetailData.price_before_discount)}</span>
+                  <span>{formatCurreny(product.price_before_discount)}</span>
                 </p>
                 <p className='relative flex items-center text-[#d0011b] font-medium'>
                   <span className='text-xl  underline underline-offset-1 mr-[2px]'>đ</span>
-                  <span className='text-3xl  leading-9'>{formatCurreny(productDetailData.price)}</span>
+                  <span className='text-3xl  leading-9'>{formatCurreny(product.price)}</span>
                 </p>
                 <span className='p-1 bg-[#d0011b] text-white uppercase text-xs font-semibold rounded-sm'>
-                  {saleRating(productDetailData.price_before_discount, productDetailData.price)}
+                  {saleRating(product.price_before_discount, product.price)}
                   <span> OFF</span>
                 </span>
               </div>
@@ -92,7 +131,7 @@ export default function ProductDetail() {
                       </svg>
                     </button>
                   </div>
-                  <span className='text-[#757575] text-sm'>{productDetailData.quantity} pieces available</span>
+                  <span className='text-[#757575] text-sm'>{product.quantity} pieces available</span>
                 </div>
               </div>
               <div className='flex items-center mt-6 gap-4'>
@@ -116,7 +155,7 @@ export default function ProductDetail() {
           <div
             className='mx-4 text-sm leading-loose'
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(productDetailData.description)
+              __html: DOMPurify.sanitize(product.description)
             }}
           ></div>
         </div>
