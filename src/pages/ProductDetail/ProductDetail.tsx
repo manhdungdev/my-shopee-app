@@ -7,6 +7,7 @@ import productApi from '~/apis/product.api'
 import InputNumber from '~/components/InputNumber'
 import Product from '~/components/Product'
 import ProductRating from '~/components/ProductRating'
+import QuantityController from '~/components/QuantityController'
 import { Product as ProductType, ProductConfig } from '~/types/product.type'
 import { formatCurreny, formatCurrenyToSocialStyle, getIdFromUrl, saleRating } from '~/utils/utils'
 
@@ -28,6 +29,7 @@ export default function ProductDetail() {
     staleTime: 3 * 60 * 1000
   })
 
+  const [buyCount, setBuyCount] = useState(1)
   const [currentIndexImages, setCurrentIndexImages] = useState([0, 5])
   const [activeImage, setActiveImage] = useState('')
   const currentImages = useMemo(
@@ -75,6 +77,8 @@ export default function ProductDetail() {
   const removeHandleZoom = () => {
     ;(imageRef.current as HTMLImageElement).removeAttribute('style')
   }
+
+  const changeValue = (value: number) => setBuyCount(value)
 
   if (!product) return null
   return (
@@ -157,22 +161,13 @@ export default function ProductDetail() {
               <div className='flex items-center gap-10 mt-6'>
                 <span className='text-sm font-normal text-[#757575]'>Quantity</span>
                 <div className='flex items-center gap-4'>
-                  <div className='flex items-center '>
-                    <button className='bg-transparent h-8 px-3 flex items-center border border-solid border-black/10'>
-                      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512' height='10px'>
-                        <path d='M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z' />
-                      </svg>
-                    </button>
-                    <InputNumber
-                      value={1}
-                      classNameInput='border border-solid border-black/10 px-3 w-[52px] h-8 text-center'
-                    />
-                    <button className='bg-transparent h-8 px-3 flex items-center border border-solid border-black/10'>
-                      <svg height='10px' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'>
-                        <path d='M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z' />
-                      </svg>
-                    </button>
-                  </div>
+                  <QuantityController
+                    onDecrease={changeValue}
+                    onType={changeValue}
+                    onIncrease={changeValue}
+                    max={product.quantity}
+                    value={buyCount}
+                  />
                   <span className='text-[#757575] text-sm'>{product.quantity} pieces available</span>
                 </div>
               </div>

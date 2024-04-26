@@ -18,7 +18,7 @@ const InputNumber = forwardRef<HTMLInputElement, InputNumberProps>(function Inpu
 ) {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
-    if (((/^\d+$/.test(value)) || value === '') && onChange) {
+    if ((/^\d+$/.test(value) || value === '') && onChange) {
       onChange(event)
     }
   }
