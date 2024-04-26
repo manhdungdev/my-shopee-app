@@ -20,3 +20,15 @@ export const saleRating = (priceBefore: number, priceSale: number) =>
 export type NoUndefinedField<T> = {
   [P in keyof T]-?: NoUndefinedField<NonNullable<T[P]>>
 }
+
+export const removeSpecialCharacter = (str: string) =>
+  // eslint-disable-next-line no-useless-escape
+  str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, '')
+
+export const generateSEOUrl = ({ name, id }: { name: string; id: string }) =>
+  removeSpecialCharacter(name).replace(/\s+/g, '-') + `-id.${id}`
+
+export const getIdFromUrl = (nameId: string) => {
+  const value = nameId.split('-id.')
+  return value[value.length - 1]
+}

@@ -7,10 +7,11 @@ import productApi from '~/apis/product.api'
 import InputNumber from '~/components/InputNumber'
 import ProductRating from '~/components/ProductRating'
 import { Product } from '~/types/product.type'
-import { formatCurreny, formatCurrenyToSocialStyle, saleRating } from '~/utils/utils'
+import { formatCurreny, formatCurrenyToSocialStyle, getIdFromUrl, saleRating } from '~/utils/utils'
 
 export default function ProductDetail() {
-  const { id } = useParams()
+  const { nameId } = useParams()
+  const id = getIdFromUrl(nameId as string)
 
   const productDetailData = useQuery({
     queryKey: ['productDetail', id],
@@ -73,7 +74,7 @@ export default function ProductDetail() {
         <div className='grid grid-cols-12 gap-4 p-6 bg-white rounded-sm'>
           <div className='col-span-5'>
             <div
-              className='relative w-full pt-[100%] overflow-hidden'
+              className='relative w-full pt-[100%] overflow-hidden hover:cursor-zoom-in'
               onMouseMove={handleZoom}
               onMouseLeave={removeHandleZoom}
             >
