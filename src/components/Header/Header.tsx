@@ -4,13 +4,29 @@ import instagram from '../../assets/icon/header-symbol/instagram.svg'
 import qrcode from '../../assets/img/header/qrcode.png'
 import { arrow, offset, shift, useFloating } from '@floating-ui/react'
 import Popover from '../Popover'
-import { Link } from 'react-router-dom'
+import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import { AppContext } from '~/contexts/app.contexts'
 import { useMutation } from '@tanstack/react-query'
 import authApi from '~/apis/auth.apis'
 import { path } from '~/constants/path'
+import useQueryConfig from '~/hooks/useQueryConfig'
+import { useForm } from 'react-hook-form'
+import { Schema, schema } from '~/utils/rules'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { omit } from 'lodash'
+
+type FormData = Pick<Schema, 'product'>
+const productSchema = schema.pick(['product'])
 
 export default function Header() {
+  const queryConfig = useQueryConfig()
+  const navigate = useNavigate()
+  const { register, handleSubmit } = useForm<FormData>({
+    defaultValues: {
+      product: ''
+    },
+    resolver: yupResolver(productSchema)
+  })
   const { isAuthenticated, setIsAuthenticated, profile } = useContext(AppContext)
   const logOutMutation = useMutation({
     mutationFn: authApi.logOut,
@@ -20,6 +36,29 @@ export default function Header() {
   })
 
   const handleLogOut = () => logOutMutation.mutate()
+
+  const handleOnSubmit = handleSubmit((data) => {
+    const config = queryConfig.order
+      ? omit(
+          {
+            ...queryConfig,
+            name: data.product
+          },
+          ['order', 'sort_by', 'category']
+        )
+      : omit(
+          {
+            ...queryConfig,
+            name: data.product
+          },
+          ['category']
+        )
+    navigate({
+      pathname: path.home,
+      search: createSearchParams(config).toString()
+    })
+  })
+
   return (
     <header className=' bg-[#ee4d2d]'>
       <div className='w-11/12 md:w-10/12 mx-auto pt-2 md:pt-0'>
@@ -177,7 +216,7 @@ export default function Header() {
             </svg>
           </a>
           <div className='flex-1'>
-            <form className='p-1 bg-white'>
+            <form className='p-1 bg-white' onSubmit={handleOnSubmit}>
               <div className='flex items-center'>
                 <input
                   type='text'
@@ -185,6 +224,7 @@ export default function Header() {
                   className='block w-full p-1 lg:p-2 text-sm text-gray-900   bg-gray-50 '
                   placeholder='Deal xả kho đón lễ to'
                   required
+                  {...register('product')}
                 />
                 <button
                   type='submit'

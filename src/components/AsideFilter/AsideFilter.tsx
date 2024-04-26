@@ -52,17 +52,17 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
       })
     },
     (err) => {
-      console.log(err)
+      // console.log(err)
       // err.price_max.ref.focus()
     }
   )
 
-  const value = watch()
-  console.log(value)
+  // const value = watch()
+  // console.log(value)
   const { category } = queryConfig
 
   useEffect(() => {
-    if (products.length === 0) {
+    if (products.length === 0 && queryConfig.category) {
       navigate({
         pathname: path.home,
         search: createSearchParams({
@@ -71,12 +71,17 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
         }).toString()
       })
     }
+    if (products.length === 0 && queryConfig.name) {
+      navigate({
+        pathname: path.home
+      })
+    }
   }, [products, navigate, queryConfig])
 
   const handeClearSort = () => {
     navigate({
       pathname: path.home,
-     search: createSearchParams(omit(queryConfig, ['price_max', 'price_min', 'rating_filter', 'category'])).toString()
+      search: createSearchParams(omit(queryConfig, ['price_max', 'price_min', 'rating_filter', 'category'])).toString()
     })
   }
 
@@ -109,10 +114,15 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
               <Link
                 to={{
                   pathname: path.home,
-                  search: createSearchParams({
-                    ...queryConfig,
-                    category: categoryItem._id
-                  }).toString()
+                  search: createSearchParams(
+                    omit(
+                      {
+                        ...queryConfig,
+                        category: categoryItem._id
+                      },
+                      ['name']
+                    )
+                  ).toString()
                 }}
                 className={`relative flex items-center px-3 py-2 text-sm ${isActive ? 'text-[#ee4d2d] font-bold' : ''}`}
               >
@@ -190,7 +200,7 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
       <RatingStars queryConfig={queryConfig} />
       <div className='my-[10px] h-[1px] w-full bg-gray-300' />
       <button
-      onClick={handeClearSort}
+        onClick={handeClearSort}
         type='button'
         className='mt-2.5 w-full uppercase  text-white bg-[#f05d40] hover:opacity-90  font-medium text-sm px-5 py-1.5 '
       >

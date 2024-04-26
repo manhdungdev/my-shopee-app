@@ -10,6 +10,7 @@ import Product from '~/components/Product'
 import SortProductList from '~/components/SortProductList'
 import { path } from '~/constants/path'
 import { sortBy } from '~/constants/product'
+import useQueryConfig from '~/hooks/useQueryConfig'
 import useQueryParams from '~/hooks/useQueryParams'
 import { ProductConfig } from '~/types/product.type'
 
@@ -18,22 +19,7 @@ export type QueryConfig = {
 }
 
 export default function ProductList() {
-  const queryParams = useQueryParams()
-  const queryConfig: QueryConfig = omitBy(
-    {
-      page: queryParams.page || '1',
-      limit: queryParams.limit || '5',
-      sort_by: queryParams.sort_by || sortBy.createdAt,
-      order: queryParams.order,
-      exclude: queryParams.exclude,
-      rating_filter: queryParams.rating_filter,
-      price_max: queryParams.price_max,
-      price_min: queryParams.price_min,
-      name: queryParams.name,
-      category: queryParams.category
-    },
-    isUndefined
-  )
+  const queryConfig = useQueryConfig()
   // console.log(queryConfig)
   const products = useQuery({
     queryKey: ['products', queryConfig],
@@ -46,6 +32,8 @@ export default function ProductList() {
     queryFn: () => categoryApi.getCategory(),
     placeholderData: keepPreviousData
   })
+
+  console.log(products.data)
 
   // console.log(catogories.data)
   return (

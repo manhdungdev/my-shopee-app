@@ -112,7 +112,8 @@ export const schema = yup.object({
       }
       return price_min !== '' || price_max !== ''
     }
-  })
+  }),
+  product: yup.string().trim().required('Please enter the product to filter')
 })
 
 export type Schema = yup.InferType<typeof schema>
