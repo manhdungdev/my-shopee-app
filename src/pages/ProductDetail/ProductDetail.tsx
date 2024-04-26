@@ -5,8 +5,9 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import productApi from '~/apis/product.api'
 import InputNumber from '~/components/InputNumber'
+import Product from '~/components/Product'
 import ProductRating from '~/components/ProductRating'
-import { Product } from '~/types/product.type'
+import { Product as ProductType, ProductConfig } from '~/types/product.type'
 import { formatCurreny, formatCurrenyToSocialStyle, getIdFromUrl, saleRating } from '~/utils/utils'
 
 export default function ProductDetail() {
@@ -18,6 +19,14 @@ export default function ProductDetail() {
     queryFn: () => productApi.getProductDetail(id as string)
   })
   const product = productDetailData.data?.data.data
+
+  const queryConfig: ProductConfig = { limit: 12, page: 1, category: product?.category._id }
+  const products = useQuery({
+    queryKey: ['products', queryConfig],
+    queryFn: () => productApi.getProducts(queryConfig),
+    enabled: Boolean(product),
+    staleTime: 3 * 60 * 1000
+  })
 
   const [currentIndexImages, setCurrentIndexImages] = useState([0, 5])
   const [activeImage, setActiveImage] = useState('')
@@ -35,7 +44,7 @@ export default function ProductDetail() {
 
   const changeActiveImage = (img: string) => setActiveImage(img)
   const next = () => {
-    if (currentIndexImages[1] < (product as Product).images.length) {
+    if (currentIndexImages[1] < (product as ProductType).images.length) {
       setCurrentIndexImages((prev) => [prev[0] + 1, prev[1] + 1])
     }
   }
@@ -191,6 +200,15 @@ export default function ProductDetail() {
               __html: DOMPurify.sanitize(product.description)
             }}
           ></div>
+        </div>
+        <p className='uppercase mt-10 mb-5 text-[#0000008a] font-medium'>You may also like</p>
+        <div className='mt-6 grid grid-cols-6 gap-3'>
+          {products.data &&
+            products.data.data.data.products.map((product) => (
+              <div className='col' key={product._id}>
+                <Product product={product} />
+              </div>
+            ))}
         </div>
       </div>
     </div>
