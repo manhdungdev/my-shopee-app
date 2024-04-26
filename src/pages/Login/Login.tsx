@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 import { isUnprocessableEntity } from '~/utils/utils'
 import { ErrorResponse } from '~/types/utils.type'
 import { AppContext } from '~/contexts/app.contexts'
-import authApi from '~/apis/auth.apis'
+import authApi from '~/apis/auth.api'
 
 type FormData = Pick<Schema, 'email' | 'password'>
 const loginSchema = schema.pick(['email', 'password'])
