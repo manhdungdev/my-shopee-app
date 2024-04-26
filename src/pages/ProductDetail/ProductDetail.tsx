@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
 // import DOMPurify from 'dompurify'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import productApi from '~/apis/product.api'
 import InputNumber from '~/components/InputNumber'
@@ -24,6 +24,8 @@ export default function ProductDetail() {
     () => (product ? product.images.slice(...currentIndexImages) : []),
     [product, currentIndexImages]
   )
+  const imageRef = useRef<HTMLImageElement>(null)
+
   useEffect(() => {
     if (product && product.images.length > 0) {
       setActiveImage(product.images[0])
@@ -43,14 +45,44 @@ export default function ProductDetail() {
     }
   }
 
+  const handleZoom = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const image = imageRef.current as HTMLImageElement
+    const { naturalHeight, naturalWidth } = image
+    const { offsetX, offsetY } = event.nativeEvent
+    const rect = event.currentTarget.getBoundingClientRect()
+
+    const left = offsetX * (1 - naturalWidth / rect.width) + 'px'
+    const top = offsetY * (1 - naturalHeight / rect.height) + 'px'
+
+    image.style.width = naturalHeight + 'px'
+    image.style.height = naturalWidth + 'px'
+    image.style.maxWidth = 'initial'
+
+    image.style.top = top
+    image.style.left = left
+  }
+
+  const removeHandleZoom = () => {
+    ;(imageRef.current as HTMLImageElement).removeAttribute('style')
+  }
+
   if (!product) return null
   return (
     <div className='bg-[#f5f5f5] pt-[30px] pb-[60px] border-b-4 border-solid border-[#ee4d2d]'>
       <div className='w-11/12 md:w-10/12 mx-auto'>
         <div className='grid grid-cols-12 gap-4 p-6 bg-white rounded-sm'>
           <div className='col-span-5'>
-            <div className='relative w-full pt-[100%]'>
-              <img className='absolute w-full h-full top-0 left-0' src={activeImage} alt='' />
+            <div
+              className='relative w-full pt-[100%] overflow-hidden'
+              onMouseMove={handleZoom}
+              onMouseLeave={removeHandleZoom}
+            >
+              <img
+                className='absolute w-full h-full top-0 left-0 pointer-events-none'
+                src={activeImage}
+                alt=''
+                ref={imageRef}
+              />
             </div>
             <div className='relative grid grid-cols-5 gap-1 mt-3'>
               {currentIndexImages[0] !== 0 && (
