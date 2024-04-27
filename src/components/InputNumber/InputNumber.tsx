@@ -6,6 +6,7 @@ export interface InputNumberProps extends InputHTMLAttributes<HTMLInputElement> 
   classNameError?: string
   classNameInput?: string
 }
+// Có thể sử dụng arrow function làm callback => không cần đặt tên
 const InputNumber = forwardRef<HTMLInputElement, InputNumberProps>(function InputNumberInner(
   {
     errorMessage,

@@ -6,7 +6,7 @@ import { arrow, offset, shift, useFloating } from '@floating-ui/react'
 import Popover from '../Popover'
 import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import { AppContext } from '~/contexts/app.contexts'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import authApi from '~/apis/auth.api'
 import { path } from '~/constants/path'
 import useQueryConfig from '~/hooks/useQueryConfig'
@@ -26,6 +26,7 @@ type FormData = Pick<Schema, 'product'>
 const productSchema = schema.pick(['product'])
 
 export default function Header() {
+  const queryClient = useQueryClient()
   const queryConfig = useQueryConfig()
   const navigate = useNavigate()
   const { register, handleSubmit } = useForm<FormData>({
@@ -39,13 +40,17 @@ export default function Header() {
     mutationFn: authApi.logOut,
     onSuccess: () => {
       setIsAuthenticated(false)
+      queryClient.removeQueries({
+        queryKey: ['purchases', { status: purchasesStatus.inCart }]
+      })
     }
   })
 
   const handleLogOut = () => logOutMutation.mutate()
   const purchasesInCart = useQuery({
     queryKey: ['purchases', { status: purchasesStatus.inCart }],
-    queryFn: () => purchasesApi.getPurchases({ status: purchasesStatus.inCart })
+    queryFn: () => purchasesApi.getPurchases({ status: purchasesStatus.inCart }),
+    enabled: isAuthenticated
   })
 
   const purchasesInCartData = purchasesInCart.data?.data.data
@@ -253,69 +258,61 @@ export default function Header() {
               </div>
             </form>
           </div>
-          {purchasesInCartData && (
-            <Popover
-              className='relative'
-              as='button'
-              renderPopover={
-                <div className='bg-white p-2'>
-                  {purchasesInCartData.length > 0 ? (
-                    <>
-                      <p className='p-[10px] text-sm font-normal text-[#00000042]'>Recently Added Products</p>
-                      <div className=''>
-                        {purchasesInCartData.slice(0, MAX_PURCHASES_DISPLAY).map((purchase) => (
-                          <div
-                            key={purchase._id}
-                            className='hover:bg-gray-100 p-[10px] flex items-center justify-between gap-2 md:gap-5'
-                          >
-                            <div className='h-10 w-10 rounded-sm border border-solid border-[#00000017]'>
-                              <img
-                                className='object-contain'
-                                src={purchase.product.image}
-                                alt={purchase.product.name}
-                              />
-                            </div>
-                            <p className='truncate text-sm font-medium max-w-[170px] md:max-w-[220px]'>
-                              {purchase.product.name}
-                            </p>
-                            <p className='text-sm text-[#ee4d2d] md:ml-auto'>đ{formatCurreny(purchase.price)}</p>
-                          </div>
-                        ))}
-                      </div>
-                      <div className='p-[10px] flex items-center justify-between '>
-                        <p className='text-xs'>
-                          {MAX_PURCHASES_DISPLAY < purchasesInCartData?.length
-                            ? `${purchasesInCartData?.length - MAX_PURCHASES_DISPLAY} products more in cart`
-                            : ''}
-                        </p>
 
-                        <button className='px-4 py-2 bg-[#ee4d2d] rounded-sm text-sm font-normal text-white'>
-                          View my shopping cart
-                        </button>
-                      </div>
-                    </>
-                  ) : (
-                    <div className='flex items-center justify-center flex-col w-[400px] h-[240px]'>
-                      <img className='w-[100px] h-[100px] mb-4' src={noProduct} alt='' />
-                      <p className='capitalize'>No products yet</p>
+          <Popover
+            className='relative'
+            as='button'
+            renderPopover={
+              <div className='bg-white p-2 shadow-md'>
+                {purchasesInCartData && purchasesInCartData.length > 0 ? (
+                  <>
+                    <p className='p-[10px] text-sm font-normal text-[#00000042]'>Recently Added Products</p>
+                    <div className=''>
+                      {purchasesInCartData.slice(0, MAX_PURCHASES_DISPLAY).map((purchase) => (
+                        <div
+                          key={purchase._id}
+                          className='hover:bg-gray-100 p-[10px] flex items-center justify-between gap-2 md:gap-5'
+                        >
+                          <div className='h-10 w-10 rounded-sm border border-solid border-[#00000017]'>
+                            <img className='object-contain' src={purchase.product.image} alt={purchase.product.name} />
+                          </div>
+                          <p className='truncate text-sm font-medium max-w-[170px] md:max-w-[220px]'>
+                            {purchase.product.name}
+                          </p>
+                          <p className='text-sm text-[#ee4d2d] md:ml-auto'>đ{formatCurreny(purchase.price)}</p>
+                        </div>
+                      ))}
                     </div>
-                  )}
-                </div>
-              }
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                viewBox='0 0 576 512'
-                className='h-[24px] lg:h-[26px]'
-                fill='white'
-              >
-                <path d='M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z' />
-              </svg>
+                    <div className='p-[10px] flex items-center justify-between '>
+                      <p className='text-xs'>
+                        {MAX_PURCHASES_DISPLAY < purchasesInCartData?.length
+                          ? `${purchasesInCartData?.length - MAX_PURCHASES_DISPLAY} products more in cart`
+                          : ''}
+                      </p>
+
+                      <Link to={path.cart} className='px-4 py-2 bg-[#ee4d2d] rounded-sm text-sm font-normal text-white'>
+                        View my shopping cart
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <div className='flex items-center justify-center flex-col w-[400px] h-[240px]'>
+                    <img className='w-[100px] h-[100px] mb-4' src={noProduct} alt='' />
+                    <p className='capitalize'>No products yet</p>
+                  </div>
+                )}
+              </div>
+            }
+          >
+            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' className='h-[24px] lg:h-[26px]' fill='white'>
+              <path d='M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z' />
+            </svg>
+            {purchasesInCartData && (
               <div className='absolute px-2 -top-2 -right-4 flex items-center justify-center rounded-full bg-white'>
                 <span className='text-[#ee4d2d] text-sm'>{purchasesInCartData.length}</span>
               </div>
-            </Popover>
-          )}
+            )}
+          </Popover>
         </div>
       </div>
     </header>
