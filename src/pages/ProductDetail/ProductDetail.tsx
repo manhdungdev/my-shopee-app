@@ -195,6 +195,7 @@ export default function ProductDetail() {
                     max={product.quantity}
                     value={buyCount}
                   />
+
                   <span className='text-[#757575] text-sm'>{product.quantity} pieces available</span>
                 </div>
               </div>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import InputNumber, { InputNumberProps } from '../InputNumber'
 
 interface Props extends InputNumberProps {
@@ -9,8 +9,8 @@ interface Props extends InputNumberProps {
 }
 
 export default function QuantityController({ max, onDecrease, onType, onIncrease, value, ...rest }: Props) {
+  const [localValue, setLocalValue] = useState(Number(value || 1))
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value)
     let valueInput = Number(event.target.value)
     if (max !== undefined && valueInput > max) {
       valueInput = max
@@ -18,21 +18,24 @@ export default function QuantityController({ max, onDecrease, onType, onIncrease
       valueInput = 1
     }
     onType && onType(valueInput)
+    setLocalValue(valueInput)
   }
   const increase = () => {
-    let valueInput = Number(value) + 1
+    let valueInput = Number(value || localValue) + 1
     if (max !== undefined && valueInput > max) {
       valueInput = max
     }
     onIncrease && onIncrease(valueInput)
+    setLocalValue(valueInput)
   }
 
   const decrease = () => {
-    let valueInput = Number(value) - 1
+    let valueInput = Number(value || localValue) - 1
     if (valueInput < 1) {
       valueInput = 1
     }
     onDecrease && onDecrease(valueInput)
+    setLocalValue(valueInput)
   }
   return (
     <div className='flex items-center '>
@@ -45,7 +48,7 @@ export default function QuantityController({ max, onDecrease, onType, onIncrease
         </svg>
       </button>
       <InputNumber
-        value={value}
+        value={value || localValue}
         classNameInput='border border-solid border-black/10 px-3 w-[65px] h-8 text-center'
         onChange={handleChange}
         {...rest}
