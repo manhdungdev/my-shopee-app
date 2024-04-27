@@ -46,7 +46,7 @@ export default function QuantityController({ max, onDecrease, onType, onIncrease
       </button>
       <InputNumber
         value={value}
-        classNameInput='border border-solid border-black/10 px-3 w-[52px] h-8 text-center'
+        classNameInput='border border-solid border-black/10 px-3 w-[65px] h-8 text-center'
         onChange={handleChange}
         {...rest}
       />

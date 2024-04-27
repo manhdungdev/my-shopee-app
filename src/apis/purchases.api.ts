@@ -3,7 +3,7 @@ import { SuccessResponse } from '~/types/utils.type'
 import http from '~/utils/http'
 
 const URL = 'purchases'
-const purchaseApi = {
+const purchasesApi = {
   addToCard: (body: { product_id: string; buy_count: number }) =>
     http.post<SuccessResponse<Purchase>>(`${URL}/add-to-cart`, body),
   getPurchases: (params: { status: PurchaseListStatus }) =>
@@ -12,4 +12,4 @@ const purchaseApi = {
     })
 }
 
-export default purchaseApi
+export default purchasesApi

@@ -12,6 +12,9 @@ export default {
       },
       boxShadow: {
         'footer-channel': '0 1px 1px rgba(0,0,0,0.2)'
+      },
+      transitionDuration: {
+        2000: '2000ms'
       }
     }
   },
