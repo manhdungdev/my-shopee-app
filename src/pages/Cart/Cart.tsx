@@ -1,12 +1,19 @@
 import { useQuery } from '@tanstack/react-query'
-import React, { useContext } from 'react'
+import { produce } from 'immer'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import purchasesApi from '~/apis/purchases.api'
 import QuantityController from '~/components/QuantityController'
 import { path } from '~/constants/path'
 import { purchasesStatus } from '~/constants/purchase'
 import { AppContext } from '~/contexts/app.contexts'
+import { Purchase } from '~/types/purchase.type'
 import { formatCurreny, generateSEOUrl } from '~/utils/utils'
+
+interface ExtendedPurchases extends Purchase {
+  disabled: boolean
+  checked: boolean
+}
 
 export default function Cart() {
   const { isAuthenticated } = useContext(AppContext)
@@ -16,7 +23,37 @@ export default function Cart() {
     enabled: isAuthenticated
   })
 
+  const [extendedPurchases, setExtendedPurchases] = useState<ExtendedPurchases[]>([])
+  const isAllChecked = extendedPurchases.every((purchase) => purchase.checked)
+
   const purchasesInCartData = purchasesInCart.data?.data.data
+  useEffect(() => {
+    setExtendedPurchases(
+      purchasesInCartData?.map((purchase) => ({
+        ...purchase,
+        disabled: false,
+        checked: false
+      })) || []
+    )
+  }, [purchasesInCartData])
+
+  const handleChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setExtendedPurchases(
+      produce((draft) => {
+        draft[index].checked = event.target.checked
+      })
+    )
+  }
+
+  const handleCheckedAll = () => {
+    setExtendedPurchases((prev) =>
+      prev.map((purchase) => ({
+        ...purchase,
+        checked: !isAllChecked
+      }))
+    )
+  }
+
   return (
     <div className='bg-[#f5f5f5] pt-5 pb-[60px] border-b-4 border-solid border-[#ee4d2d]'>
       <div className='w-11/12 md:w-10/12 mx-auto'>
@@ -25,7 +62,12 @@ export default function Cart() {
             <div className='col-span-5'>
               <div className='flex items-center gap-4'>
                 {' '}
-                <input type='checkbox' className='accent-[#EE4D2D] h-4 w-4' />
+                <input
+                  type='checkbox'
+                  className='accent-[#EE4D2D] h-4 w-4'
+                  checked={isAllChecked}
+                  onChange={handleCheckedAll}
+                />
                 <span className=''>Product</span>
               </div>
             </div>
@@ -49,11 +91,19 @@ export default function Cart() {
         </div>
 
         <div className='p-6 bg-white rounded-sm mt-5  '>
-          {purchasesInCartData?.map((purchase) => (
-            <div className='grid grid-cols-12 mt-8 p-4 first-child:mt-0  border border-solid border-gray-200 rounded-sm'>
+          {extendedPurchases?.map((purchase, index) => (
+            <div
+              key={purchase._id}
+              className='grid grid-cols-12 mt-8 p-4 first-child:mt-0  border border-solid border-gray-200 rounded-sm'
+            >
               <div className='col-span-5'>
                 <div className='flex items-center gap-4'>
-                  <input type='checkbox' className='accent-[#EE4D2D] h-4 w-4' />
+                  <input
+                    type='checkbox'
+                    className='accent-[#EE4D2D] h-4 w-4'
+                    checked={purchase.checked}
+                    onChange={handleChange(index)}
+                  />
                   <Link
                     to={`${path.home}${generateSEOUrl({ name: purchase.product.name, id: purchase.product._id })}`}
                     className='flex gap-4 items-start'
@@ -108,9 +158,15 @@ export default function Cart() {
         <div className='sticky bottom-0 px-6 py-5 bg-white  rounded-sm mt-5 shadow-md border border-solid border-gray-200'>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-5'>
-              <input type='checkbox' className='accent-[#EE4D2D] h-4 w-4' id='select-all' />
-              <label htmlFor='select-all' className='select-none cursor-pointer'>
-                Select all (3)
+              <input
+                type='checkbox'
+                className='accent-[#EE4D2D] h-4 w-4'
+                id='select-all'
+                checked={isAllChecked}
+                onChange={handleCheckedAll}
+              />
+              <label htmlFor='select-all' className='select-none cursor-pointer' >
+                Select all ({extendedPurchases.length})
               </label>
               <button>Delete</button>
             </div>

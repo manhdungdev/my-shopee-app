@@ -77,7 +77,6 @@ export default function Header() {
     })
   })
 
-  console.log(purchasesInCartData)
   // if (!purchasesInCartData) return null
 
   return (
