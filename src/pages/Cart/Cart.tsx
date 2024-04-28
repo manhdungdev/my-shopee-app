@@ -1,13 +1,16 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { produce } from 'immer'
+import { keyBy } from 'lodash'
 import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { number } from 'yup'
 import purchasesApi from '~/apis/purchases.api'
 import QuantityController from '~/components/QuantityController'
 import { path } from '~/constants/path'
 import { purchasesStatus } from '~/constants/purchase'
 import { AppContext } from '~/contexts/app.contexts'
 import { Purchase } from '~/types/purchase.type'
+import http from '~/utils/http'
 import { formatCurreny, generateSEOUrl } from '~/utils/utils'
 
 interface ExtendedPurchases extends Purchase {
@@ -23,18 +26,32 @@ export default function Cart() {
     enabled: isAuthenticated
   })
 
+  const updatePurchasesMutation = useMutation({
+    mutationFn: purchasesApi.updatePurchases,
+    onSuccess: () => {
+      purchasesInCart.refetch()
+    }
+  })
+
   const [extendedPurchases, setExtendedPurchases] = useState<ExtendedPurchases[]>([])
   const isAllChecked = extendedPurchases.every((purchase) => purchase.checked)
 
   const purchasesInCartData = purchasesInCart.data?.data.data
   useEffect(() => {
-    setExtendedPurchases(
-      purchasesInCartData?.map((purchase) => ({
-        ...purchase,
-        disabled: false,
-        checked: false
-      })) || []
-    )
+    setExtendedPurchases((prev) => {
+      const prevPurchases = keyBy(prev, '_id')
+      return (
+        purchasesInCartData?.map((purchase) => ({
+          ...purchase,
+          disabled: false,
+          checked: Boolean(prevPurchases[purchase._id]?.checked)
+        })) || []
+      )
+    })
+
+    return () => {
+      console.log('unmount')
+    }
   }, [purchasesInCartData])
 
   const handleChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,6 +61,17 @@ export default function Cart() {
       })
     )
   }
+  console.log('rerender')
+
+  const handleQuantity = (index: number, value: number) => {
+    const purchase = extendedPurchases[index]
+    setExtendedPurchases(
+      produce((draft) => {
+        draft[index].disabled = true
+      })
+    )
+    updatePurchasesMutation.mutate({ product_id: purchase.product._id, buy_count: value })
+  }
 
   const handleCheckedAll = () => {
     setExtendedPurchases((prev) =>
@@ -52,6 +80,26 @@ export default function Cart() {
         checked: !isAllChecked
       }))
     )
+  }
+
+  const handleOnTypeQuantity = (index: number) => (value: number) => {
+    setExtendedPurchases(
+      produce((draft) => {
+        draft[index].buy_count = value
+      })
+    )
+  }
+
+  const handleFocusOut = (index: number, value: number, condition: boolean) => {
+    const purchase = extendedPurchases[index]
+    if (condition) {
+      setExtendedPurchases(
+        produce((draft) => {
+          draft[index].disabled = true
+        })
+      )
+      updatePurchasesMutation.mutate({ product_id: purchase.product._id, buy_count: value })
+    }
   }
 
   return (
@@ -133,7 +181,21 @@ export default function Cart() {
                   </div>
                   <div className='col-span-3'>
                     <div className='flex items-center justify-center h-full'>
-                      <QuantityController max={purchase.product.quantity} />
+                      <QuantityController
+                        max={purchase.product.quantity}
+                        value={purchase.buy_count}
+                        onIncrease={(value) => handleQuantity(index, value)}
+                        onType={handleOnTypeQuantity(index)}
+                        onDecrease={(value) => handleQuantity(index, value)}
+                        onFocusOut={(value) =>
+                          handleFocusOut(
+                            index,
+                            value,
+                            purchase.buy_count !== (purchasesInCartData as Purchase[])[index].buy_count
+                          )
+                        }
+                        disabled={purchase.disabled}
+                      />
                     </div>
                   </div>
                   <div className='col-span-3'>
@@ -165,7 +227,7 @@ export default function Cart() {
                 checked={isAllChecked}
                 onChange={handleCheckedAll}
               />
-              <label htmlFor='select-all' className='select-none cursor-pointer' >
+              <label htmlFor='select-all' className='select-none cursor-pointer'>
                 Select all ({extendedPurchases.length})
               </label>
               <button>Delete</button>
