@@ -16,7 +16,7 @@ export default function SuccessAddToCart({
       timeOut = setTimeout(() => {
         setIsVisible(false)
         resetStateIsOpen()
-      }, 4000)
+      }, 2000)
     }
     return () => {
       clearTimeout(timeOut)
