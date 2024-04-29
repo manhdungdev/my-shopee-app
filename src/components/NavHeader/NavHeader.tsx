@@ -154,7 +154,7 @@ export default function NavHeader() {
                 <Link to={path.profile} className='block w-full text-left p-[10px] hover:text-[#ee4d2d] '>
                   My account
                 </Link>
-                <Link to='/' className='block w-full text-left p-[10px] hover:text-[#ee4d2d] '>
+                <Link to='/cart' className='block w-full text-left p-[10px] hover:text-[#ee4d2d] '>
                   My purchase
                 </Link>
                 <button onClick={handleLogOut} className='block w-full text-left p-[10px] hover:text-[#ee4d2d]'>

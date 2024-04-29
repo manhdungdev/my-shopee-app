@@ -35,7 +35,7 @@ export default function ProductList() {
     staleTime: 3 * 60 * 1000
   })
 
-  console.log(products.data)
+  // console.log(products.data)
 
   // console.log(catogories.data)
   return (

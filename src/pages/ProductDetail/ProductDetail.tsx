@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
 // import DOMPurify from 'dompurify'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import productApi from '~/apis/product.api'
 import purchasesApi from '~/apis/purchases.api'
 import InputNumber from '~/components/InputNumber'
@@ -10,11 +10,13 @@ import Product from '~/components/Product'
 import ProductRating from '~/components/ProductRating'
 import QuantityController from '~/components/QuantityController'
 import SuccessAddToCart from '~/components/SucessAddToCart'
+import { path } from '~/constants/path'
 import { purchasesStatus } from '~/constants/purchase'
 import { Product as ProductType, ProductConfig } from '~/types/product.type'
 import { formatCurreny, formatCurrenyToSocialStyle, getIdFromUrl, saleRating } from '~/utils/utils'
 
 export default function ProductDetail() {
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { nameId } = useParams()
   const id = getIdFromUrl(nameId as string)
@@ -105,6 +107,26 @@ export default function ProductDetail() {
 
   const resetStateIsOpen = () => {
     setIsOpen(false)
+  }
+
+  const buyNow = () => {
+    addToCartMutation.mutate(
+      { product_id: product?._id as string, buy_count: buyCount },
+      {
+        onSuccess: (data) => {
+          navigate(
+            {
+              pathname: path.cart
+            },
+            {
+              state: {
+                purchaseId: data.data.data._id
+              }
+            }
+          )
+        }
+      }
+    )
   }
 
   if (!product) return null
@@ -210,7 +232,12 @@ export default function ProductDetail() {
                   <span className='text-sm '>Add to cart</span>
                   <SuccessAddToCart isOpen={isOpen} resetStateIsOpen={resetStateIsOpen} />
                 </button>
-                <button className='text-sm bg-[#d0011b] text-white hover:opacity-80 w-[180px] h-[48px]'>Buy now</button>
+                <button
+                  onClick={buyNow}
+                  className='text-sm bg-[#d0011b] text-white hover:opacity-80 w-[180px] h-[48px]'
+                >
+                  Buy now
+                </button>
               </div>
             </div>
           </div>
