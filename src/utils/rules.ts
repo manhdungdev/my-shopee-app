@@ -1,3 +1,4 @@
+import { addPointerEvent } from 'framer-motion'
 import { RegisterOptions, UseFormGetValues } from 'react-hook-form'
 import * as yup from 'yup'
 
@@ -67,7 +68,6 @@ export const getRules = (getValues?: UseFormGetValues<FormState>): Rules => ({
   }
 })
 
-
 export const schema = yup.object({
   email: yup
     .string()
@@ -116,4 +116,22 @@ export const schema = yup.object({
   product: yup.string().trim().required('Please enter the product to filter')
 })
 
+export const userSchema = yup.object({
+  name: yup.string().max(160, 'Please input most 160 characters'),
+  phone: yup.string().max(20, 'Please input most 20 characters'),
+  address: yup.string().max(160, 'Please input most 160 characters'),
+  avatar: yup.string().max(1000, 'Please input most 1000 characters'),
+  date_of_birth: yup.date().max(new Date(), 'Please input a past day'),
+  password: schema.fields['password'],
+  new_password: schema.fields['password'],
+  confirm_password: yup
+    .string()
+    .required('Please enter your password')
+    .min(6, 'Please input at least 6 characters')
+    .max(160, 'Please input most 160 characters')
+    .oneOf([yup.ref('new_password')], 'Password is not matched')
+})
+
 export type Schema = yup.InferType<typeof schema>
+
+export type UserSchema = yup.InferType<typeof userSchema>
