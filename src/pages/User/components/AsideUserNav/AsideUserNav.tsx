@@ -1,25 +1,37 @@
-import React from 'react'
+import { profile } from 'console'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { path } from '~/constants/path'
+import { AppContext } from '~/contexts/app.contexts'
 
 export default function AsideUserNav() {
+  const { profile } = useContext(AppContext)
   return (
     <div>
       <div className='flex items-center gap-4 my-4'>
         <div className='h-[50px] w-[50px] rounded-full flex items-center justify-center border-2 border-solid border-black/10'>
-          <svg
-            enableBackground='new 0 0 15 15'
-            viewBox='0 0 15 15'
-            className='shopee-svg-icon icon-headshot'
-            height='24px'
-            width='24px'
-            stroke='#c6c6c6'
-          >
-            <g>
-              <circle cx='7.5' cy='4.5' fill='none' r='3.8' strokeMiterlimit='{10}' />
-              <path d='m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6' fill='none' strokeLinecap='round' strokeMiterlimit='{10}' />
-            </g>
-          </svg>
+          {profile?.avatar ? (
+            <img src={profile?.avatar} alt='' className='w-full h-full object-cover rounded-full' />
+          ) : (
+            <svg
+              enableBackground='new 0 0 15 15'
+              viewBox='0 0 15 15'
+              className='shopee-svg-icon icon-headshot'
+              height='24px'
+              width='24px'
+              stroke='#c6c6c6'
+            >
+              <g>
+                <circle cx='7.5' cy='4.5' fill='none' r='3.8' strokeMiterlimit='{10}' />
+                <path
+                  d='m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6'
+                  fill='none'
+                  strokeLinecap='round'
+                  strokeMiterlimit='{10}'
+                />
+              </g>
+            </svg>
+          )}
         </div>
         <div>
           <p className='font-semibold text-[#333] text-sm truncate'>manhdungakp</p>

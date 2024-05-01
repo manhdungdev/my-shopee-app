@@ -1,10 +1,14 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useQuery } from '@tanstack/react-query'
-import React, { useEffect } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import React, { useContext, useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import userApi from '~/apis/user.api'
 import InputNumber from '~/components/InputNumber'
 import { UserSchema, userSchema } from '~/utils/rules'
+import DateSelect from '../../components/DateSelect'
+import { toast } from 'react-toastify'
+import { AppContext } from '~/contexts/app.contexts'
+import { setProfileToLS } from '~/utils/auth'
 
 type FormData = Pick<UserSchema, 'name' | 'address' | 'avatar' | 'date_of_birth' | 'phone'>
 const profileSchema = userSchema.pick(['address', 'avatar', 'date_of_birth', 'phone', 'name'])
@@ -28,9 +32,14 @@ export default function Profile() {
     resolver: yupResolver(profileSchema)
   })
 
-  const { data: profileData } = useQuery({
+  const { setProfile } = useContext(AppContext)
+  const { data: profileData, refetch } = useQuery({
     queryKey: ['profile'],
     queryFn: userApi.getProfile
+  })
+
+  const updateProfileMutation = useMutation({
+    mutationFn: userApi.updateProfile
   })
 
   const profile = profileData?.data.data
@@ -45,12 +54,25 @@ export default function Profile() {
     }
   }, [profile, setValue])
 
+  const onSubmit = handleSubmit(async (data) => {
+    console.log(data)
+    // const res = await updateProfileMutation.mutateAsync({ ...data, date_of_birth: data.date_of_birth?.toISOString() })
+    // console.log(res)
+    // setProfile(res.data.data)
+    // setProfileToLS(res.data.data)
+    // refetch()
+    // toast.success(res.data.message, {
+    //   position: 'top-center',
+    //   autoClose: 2000
+    // })
+  })
+
   return (
     <div className='bg-white pt-5 pb-12 px-8'>
       <h1 className='text-xl font-semibold text-[#111]'>My Profile</h1>
       <p className='mt-3 text-sm'>Manage and protect your account</p>
       <div className='h-[1px] w-full bg-[#d5d4d4] my-8 '></div>
-      <form className='grid grid-cols-12 items-center'>
+      <form className='grid grid-cols-12 items-center' onSubmit={onSubmit}>
         <div className='col-span-8'>
           <div className='flex flex-col gap-5 pr-[50px] border-r-2 border-solid border-[#efefef]  text-sm text-[#555555cc]'>
             <div className='flex items-center gap-5'>
@@ -68,7 +90,10 @@ export default function Profile() {
                   {...register('name')}
                 />
               </div>
-              <p className=' mt-1 min-h-5 text-sm font-medium text-red-500 text-center'>{errors.name?.message}</p>
+              <div className='flex items-center gap-5'>
+                <span className='text-right w-[30%] shrink-0'></span>
+                <p className=' mt-1 min-h-5 text-sm font-medium text-red-500 text-center'>{errors.name?.message}</p>
+              </div>
             </div>
             <div className='flex items-center gap-5'>
               <p className='text-right w-[30%]'>Email</p>
@@ -89,7 +114,10 @@ export default function Profile() {
                   )}
                 />
               </div>
-              <p className=' mt-1 min-h-5 text-sm font-medium text-red-500'>{}</p>
+              <div className='flex items-center gap-5'>
+                <span className='text-right w-[30%] shrink-0'></span>
+                <p className=' mt-1 min-h-5 text-sm font-medium text-red-500 text-center'>{errors.phone?.message}</p>
+              </div>
             </div>
             <div>
               <div className='flex items-center gap-5'>
@@ -101,22 +129,22 @@ export default function Profile() {
                   {...register('address')}
                 />
               </div>
-              <p className=' mt-1 min-h-5 text-sm font-medium text-red-500'>{errors.address?.message}</p>
-            </div>
-            <div className='flex items-center gap-5'>
-              <p className='text-right w-[30%]'>Date of birth</p>
-              <div className='flex justify-between flex-1 gap-6'>
-                <select className='flex-1 rounded-sm border border-solid border-black/30 px-3 py-2 hover:border-red-500'>
-                  <option value=''>Day</option>
-                </select>
-                <select className='flex-1 rounded-sm border border-solid border-black/30 px-3 py-2 hover:border-red-500'>
-                  <option value=''>Month</option>
-                </select>
-                <select className='flex-1 rounded-sm border border-solid border-black/30 px-3 py-2 hover:border-red-500'>
-                  <option value=''>Year</option>
-                </select>
+              <div className='flex items-center gap-5'>
+                <span className='text-right w-[30%] shrink-0'></span>
+                <p className=' mt-1 min-h-5 text-sm font-medium text-red-500 text-center'>{errors.address?.message}</p>
               </div>
             </div>
+            <Controller
+              control={control}
+              name='date_of_birth'
+              render={({ field }) => (
+                <DateSelect
+                  errorMessage={errors.date_of_birth?.message}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
             <div className='flex items-center gap-5'>
               <p className='text-right w-[30%]'></p>
               <button
