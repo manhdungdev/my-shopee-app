@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import userApi from '~/apis/user.api'
 import InputNumber from '~/components/InputNumber'
@@ -9,8 +9,14 @@ import DateSelect from '../../components/DateSelect'
 import { toast } from 'react-toastify'
 import { AppContext } from '~/contexts/app.contexts'
 import { setProfileToLS } from '~/utils/auth'
+import avatarUpload from '../../../../assets/icon/user/avatar-upload.svg'
+import { getUrlAvatar, isUnprocessableEntity } from '~/utils/utils'
+import { ErrorResponse } from '~/types/utils.type'
 
 type FormData = Pick<UserSchema, 'name' | 'address' | 'avatar' | 'date_of_birth' | 'phone'>
+type FormDataError = Omit<FormData, 'date_of_birth'> & {
+  date_of_birth?: string
+}
 const profileSchema = userSchema.pick(['address', 'avatar', 'date_of_birth', 'phone', 'name'])
 
 export default function Profile() {
@@ -20,7 +26,8 @@ export default function Profile() {
     formState: { errors },
     handleSubmit,
     watch,
-    setValue
+    setValue,
+    setError
   } = useForm<FormData>({
     defaultValues: {
       name: '',
@@ -33,6 +40,8 @@ export default function Profile() {
   })
 
   const { setProfile } = useContext(AppContext)
+  const [file, setFile] = useState<File>()
+  const uploadImageRef = useRef<HTMLInputElement>(null)
   const { data: profileData, refetch } = useQuery({
     queryKey: ['profile'],
     queryFn: userApi.getProfile
@@ -42,7 +51,14 @@ export default function Profile() {
     mutationFn: userApi.updateProfile
   })
 
+  const uploadAvatarMutation = useMutation({
+    mutationFn: userApi.uploadAvatar
+  })
+
   const profile = profileData?.data.data
+  const preview = useMemo(() => (file ? URL.createObjectURL(file) : ''), [file])
+  const avatar = watch('avatar')
+  console.log(avatar)
 
   useEffect(() => {
     if (profile) {
@@ -55,17 +71,52 @@ export default function Profile() {
   }, [profile, setValue])
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data)
-    // const res = await updateProfileMutation.mutateAsync({ ...data, date_of_birth: data.date_of_birth?.toISOString() })
-    // console.log(res)
-    // setProfile(res.data.data)
-    // setProfileToLS(res.data.data)
-    // refetch()
-    // toast.success(res.data.message, {
-    //   position: 'top-center',
-    //   autoClose: 2000
-    // })
+    try {
+      let avatarName = avatar
+      if (file) {
+        const form = new FormData()
+        form.append('image', file)
+        const uploadRes = await uploadAvatarMutation.mutateAsync(form)
+        avatarName = uploadRes.data.data
+        setValue('avatar', avatarName)
+      }
+
+      const res = await updateProfileMutation.mutateAsync({
+        ...data,
+        date_of_birth: data.date_of_birth?.toISOString(),
+        avatar: avatarName
+      })
+      console.log(res)
+      setProfile(res.data.data)
+      setProfileToLS(res.data.data)
+      refetch()
+      toast.success(res.data.message, {
+        position: 'top-center',
+        autoClose: 2000
+      })
+    } catch (error) {
+      if (isUnprocessableEntity<ErrorResponse<FormDataError>>(error)) {
+        const formError = error.response?.data.data
+        if (formError) {
+          Object.keys(formError).forEach((key) => {
+            setError(key as keyof FormDataError, {
+              message: formError[key as keyof FormDataError],
+              type: 'Server'
+            })
+          })
+        }
+      }
+    }
   })
+
+  const handleUploadImage = () => {
+    uploadImageRef.current?.click()
+  }
+
+  const uploadAvatar = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0]
+    setFile(selectedFile)
+  }
 
   return (
     <div className='bg-white pt-5 pb-12 px-8'>
@@ -160,30 +211,36 @@ export default function Profile() {
         <div className='col-span-4'>
           <div className='flex flex-col items-center justify-center gap-5'>
             <div className='h-[100px] w-[100px] rounded-full flex items-center justify-center border-2 border-solid border-black/10'>
-              <svg
-                enableBackground='new 0 0 15 15'
-                viewBox='0 0 15 15'
-                className='shopee-svg-icon icon-headshot'
-                height='50px'
-                width='50px'
-                stroke='#c6c6c6'
-              >
-                <g>
-                  <circle cx='7.5' cy='4.5' fill='none' r='3.8' strokeMiterlimit='10'></circle>
-                  <path
-                    d='m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6'
-                    fill='none'
-                    strokeLinecap='round'
-                    strokeMiterlimit='10'
-                  ></path>
-                </g>
-              </svg>
+              {/* {avatar && (
+                <img src={preview || getUrlAvatar(avatar)} alt='' className='w-full h-full object-cover rounded-full' />
+              )}
+              {!avatar &&
+                (preview ? (
+                  <img src={preview} alt='' className='w-full h-full object-cover rounded-full' />
+                ) : (
+                  <img src={avatarUpload} alt='' />
+                ))} */}
+              {
+                <img
+                  src={preview || (avatar && getUrlAvatar(avatar)) || avatarUpload}
+                  alt=''
+                  className={`${preview || (avatar && getUrlAvatar(avatar)) ? 'w-full h-full object-cover rounded-full' : ''}`}
+                />
+              }
             </div>
             <div className=''>
-              <input className='hidden' type='file' accept='.jpg,.jpeg,.png'></input>
+              <input
+                className='hidden'
+                type='file'
+                // multiple
+                accept='.jpg,.jpeg,.png'
+                ref={uploadImageRef}
+                onChange={uploadAvatar}
+              ></input>
               <button
                 type='button'
                 className='py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-sm border border-gray-200 hover:opacity-90'
+                onClick={handleUploadImage}
               >
                 Select image
               </button>

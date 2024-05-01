@@ -3,6 +3,7 @@ import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { path } from '~/constants/path'
 import { AppContext } from '~/contexts/app.contexts'
+import { getUrlAvatar } from '~/utils/utils'
 
 export default function AsideUserNav() {
   const { profile } = useContext(AppContext)
@@ -11,7 +12,7 @@ export default function AsideUserNav() {
       <div className='flex items-center gap-4 my-4'>
         <div className='h-[50px] w-[50px] rounded-full flex items-center justify-center border-2 border-solid border-black/10'>
           {profile?.avatar ? (
-            <img src={profile?.avatar} alt='' className='w-full h-full object-cover rounded-full' />
+            <img src={getUrlAvatar(profile.avatar)} alt='' className='w-full h-full object-cover rounded-full' />
           ) : (
             <svg
               enableBackground='new 0 0 15 15'

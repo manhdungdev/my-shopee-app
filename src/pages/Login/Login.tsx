@@ -41,19 +41,27 @@ export default function Login() {
       onError: (error) => {
         if (isUnprocessableEntity<ErrorResponse<FormData>>(error)) {
           const formError = error.response?.data.data
-          if (formError?.email) {
-            setError('email', {
-              message: formError.email,
-              type: 'Server'
+          if (formError) {
+            Object.keys(formError).forEach((key) => {
+              setError(key as keyof FormData, {
+                message: formError[key as keyof FormData],
+                type: 'Server'
+              })
             })
           }
+          // if (formError?.email) {
+          //   setError('email', {
+          //     message: formError.email,
+          //     type: 'Server'
+          //   })
+          // }
 
-          if (formError?.password) {
-            setError('password', {
-              message: formError.password,
-              type: 'Server'
-            })
-          }
+          // if (formError?.password) {
+          //   setError('password', {
+          //     message: formError.password,
+          //     type: 'Server'
+          //   })
+          // }
         }
       }
     })

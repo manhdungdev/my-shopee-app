@@ -1,4 +1,5 @@
 import axios, { AxiosError, HttpStatusCode } from 'axios'
+import { config } from '~/constants/config'
 
 export const isUnprocessableEntity = <T>(error: unknown): error is AxiosError<T> => {
   return axios.isAxiosError(error) && error.response?.status === HttpStatusCode.UnprocessableEntity
@@ -32,3 +33,5 @@ export const getIdFromUrl = (nameId: string) => {
   const value = nameId.split('-id.')
   return value[value.length - 1]
 }
+
+export const getUrlAvatar = (nameAvatar?: string) => `${config.baseUrl}images/${nameAvatar}`
