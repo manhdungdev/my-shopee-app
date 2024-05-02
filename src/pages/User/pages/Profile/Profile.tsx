@@ -117,7 +117,7 @@ export default function Profile() {
       <h1 className='text-xl font-semibold text-[#111]'>My Profile</h1>
       <p className='mt-3 text-sm'>Manage and protect your account</p>
       <div className='my-8 h-[1px] w-full bg-[#d5d4d4] '></div>
-      <form className='grid grid-cols-12 items-center' onSubmit={onSubmit}>
+      <form className='grid grid-cols-12 items-center' onSubmit={onSubmit} noValidate>
         <div className='col-span-8'>
           <div className='flex flex-col gap-5 border-r-2 border-solid border-[#efefef] pr-[50px]  text-sm text-[#555555cc]'>
             <div className='flex items-center gap-5'>
@@ -132,6 +132,7 @@ export default function Profile() {
                   className='w-full rounded-sm border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 lg:p-2.5 '
                   required
                   autoFocus
+                  placeholder='Name'
                   {...register('name')}
                 />
               </div>
@@ -153,6 +154,7 @@ export default function Profile() {
                   render={({ field }) => (
                     <InputNumber
                       className='w-full rounded-sm border border-gray-300 bg-gray-50 p-2 text-sm  text-gray-900 lg:p-2.5 '
+                      placeholder='Phone'
                       {...field}
                       onChange={field.onChange}
                     />
@@ -171,6 +173,7 @@ export default function Profile() {
                   type='text'
                   className='w-full flex-1 rounded-sm border border-gray-300 bg-gray-50 p-2 text-sm  text-gray-900 lg:p-2.5 '
                   required
+                  placeholder='Address'
                   {...register('address')}
                 />
               </div>

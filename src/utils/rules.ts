@@ -122,8 +122,8 @@ export const userSchema = yup.object({
   address: yup.string().max(160, 'Please input most 160 characters'),
   avatar: yup.string().max(1000, 'Please input most 1000 characters'),
   date_of_birth: yup.date().max(new Date(), 'Please input a past day'),
-  password: schema.fields['password'],
-  new_password: schema.fields['password'],
+  password: schema.fields['password'] as yup.StringSchema<string, yup.AnyObject, undefined, ''>,
+  new_password: schema.fields['password'] as yup.StringSchema<string, yup.AnyObject, undefined, ''>,
   confirm_password: yup
     .string()
     .required('Please enter your password')
