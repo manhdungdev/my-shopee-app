@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { produce } from 'immer'
-import { keyBy } from 'lodash'
+import  keyBy  from 'lodash/keyBy'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -13,7 +13,7 @@ import { purchasesStatus } from '~/constants/purchase'
 import { AppContext } from '~/contexts/app.contexts'
 import { Purchase } from '~/types/purchase.type'
 import http from '~/utils/http'
-import { formatCurreny, generateSEOUrl } from '~/utils/utils'
+import { formatCurrency, generateSEOUrl } from '~/utils/utils'
 import noProduct from '../../assets/img/header/no-product.png'
 
 export default function Cart() {
@@ -158,18 +158,18 @@ export default function Cart() {
   }
 
   return (
-    <div className='bg-[#f5f5f5] pt-5 pb-[60px] border-b-4 border-solid border-[#ee4d2d]'>
-      <div className='w-11/12 md:w-10/12 mx-auto'>
+    <div className='border-b-4 border-solid border-[#ee4d2d] bg-[#f5f5f5] pb-[60px] pt-5'>
+      <div className='mx-auto w-11/12 md:w-10/12'>
         {extendedPurchases.length > 0 ? (
           <>
-            <div className='p-6 pr-10 bg-white  rounded-sm'>
+            <div className='rounded-sm bg-white p-6  pr-10'>
               <div className='grid grid-cols-12 '>
                 <div className='col-span-5'>
                   <div className='flex items-center gap-4'>
                     {' '}
                     <input
                       type='checkbox'
-                      className='accent-[#EE4D2D] h-4 w-4'
+                      className='h-4 w-4 accent-[#EE4D2D]'
                       checked={isAllChecked}
                       onChange={handleCheckedAll}
                     />
@@ -179,60 +179,60 @@ export default function Cart() {
                 <div className='col-span-7'>
                   <div className='grid grid-cols-12'>
                     <div className='col-span-3'>
-                      <p className='text-sm text-[#888888] text-center'>Unit Price</p>
+                      <p className='text-center text-sm text-[#888888]'>Unit Price</p>
                     </div>
                     <div className='col-span-3'>
-                      <p className='text-sm text-[#888888] text-center'>Quantity</p>
+                      <p className='text-center text-sm text-[#888888]'>Quantity</p>
                     </div>
                     <div className='col-span-3'>
-                      <p className='text-sm text-[#888888] text-center'>Total Price</p>
+                      <p className='text-center text-sm text-[#888888]'>Total Price</p>
                     </div>
                     <div className='col-span-3'>
-                      <p className='text-sm text-[#888888] text-center'>Actions</p>
+                      <p className='text-center text-sm text-[#888888]'>Actions</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className='p-6 bg-white rounded-sm mt-5  '>
+            <div className='mt-5 rounded-sm bg-white p-6  '>
               {extendedPurchases?.map((purchase, index) => (
                 <div
                   key={purchase._id}
-                  className='grid items-center grid-cols-12 mt-8 p-4 first-child:mt-0  border border-solid border-gray-200 rounded-sm'
+                  className='first-child:mt-0 mt-8 grid grid-cols-12 items-center rounded-sm  border border-solid border-gray-200 p-4'
                 >
                   <div className='col-span-5'>
                     <div className='flex items-center gap-4'>
                       <input
                         type='checkbox'
-                        className='accent-[#EE4D2D] h-4 w-4'
+                        className='h-4 w-4 accent-[#EE4D2D]'
                         checked={purchase.checked}
                         onChange={handleChange(index)}
                       />
                       <Link
                         to={`${path.home}${generateSEOUrl({ name: purchase.product.name, id: purchase.product._id })}`}
-                        className='flex gap-4 items-start'
+                        className='flex items-start gap-4'
                       >
                         <img
-                          className='w-[80px] h-[80px] object-contain'
+                          className='h-[80px] w-[80px] object-contain'
                           src={purchase.product.image}
                           alt={purchase.product.name}
                         />
-                        <p className='max-w-[300px] line-clamp-4 mt-2 text-black/80'>{purchase.product.name}</p>
+                        <p className='mt-2 line-clamp-4 max-w-[300px] text-black/80'>{purchase.product.name}</p>
                       </Link>
                     </div>
                   </div>
                   <div className='col-span-7'>
-                    <div className='grid grid-cols-12 h-full'>
+                    <div className='grid h-full grid-cols-12'>
                       <div className='col-span-3'>
                         <div className='flex items-center justify-center gap-3 text-sm '>
-                          <p className='relative flex items-center text-black/50 before:absolute before:left-0 before:w-full before:h-[1px] before:bg-black/50'>
-                            <span className=' underline underline-offset-1 mr-[2px]'>đ</span>
-                            <span>{formatCurreny(purchase.price_before_discount)}</span>
+                          <p className='relative flex items-center text-black/50 before:absolute before:left-0 before:h-[1px] before:w-full before:bg-black/50'>
+                            <span className=' mr-[2px] underline underline-offset-1'>đ</span>
+                            <span>{formatCurrency(purchase.price_before_discount)}</span>
                           </p>
                           <p className='relative flex items-center text-black/90'>
-                            <span className=' underline underline-offset-1 mr-[2px]'>đ</span>
-                            <span className=' leading-9'>{formatCurreny(purchase.price)}</span>
+                            <span className=' mr-[2px] underline underline-offset-1'>đ</span>
+                            <span className=' leading-9'>{formatCurrency(purchase.price)}</span>
                           </p>
                         </div>
                       </div>
@@ -258,14 +258,14 @@ export default function Cart() {
                       <div className='col-span-3'>
                         <div className='flex items-center justify-center '>
                           <p className='relative flex items-center text-red-500'>
-                            <span className=' underline underline-offset-1 mr-[2px]'>đ</span>
-                            <span className=' leading-9'>{formatCurreny(purchase.price * purchase.buy_count)}</span>
+                            <span className=' mr-[2px] underline underline-offset-1'>đ</span>
+                            <span className=' leading-9'>{formatCurrency(purchase.price * purchase.buy_count)}</span>
                           </p>
                         </div>
                       </div>
                       <div className='col-span-3'>
-                        <div className='flex items-center justify-center h-full w-full'>
-                          <button className=' hover:text-red-500 text-sm' onClick={() => handleDeletePurchase(index)}>
+                        <div className='flex h-full w-full items-center justify-center'>
+                          <button className=' text-sm hover:text-red-500' onClick={() => handleDeletePurchase(index)}>
                             Delete
                           </button>
                         </div>
@@ -276,17 +276,17 @@ export default function Cart() {
               ))}
             </div>
 
-            <div className='sticky bottom-0 px-6 py-5 bg-white  rounded-sm mt-5 shadow-md border border-solid border-gray-200'>
+            <div className='sticky bottom-0 mt-5 rounded-sm border  border-solid border-gray-200 bg-white px-6 py-5 shadow-md'>
               <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-5'>
                   <input
                     type='checkbox'
-                    className='accent-[#EE4D2D] h-4 w-4'
+                    className='h-4 w-4 accent-[#EE4D2D]'
                     id='select-all'
                     checked={isAllChecked}
                     onChange={handleCheckedAll}
                   />
-                  <label htmlFor='select-all' className='select-none cursor-pointer'>
+                  <label htmlFor='select-all' className='cursor-pointer select-none'>
                     Select all ({extendedPurchases.length})
                   </label>
                   <button onClick={handleDeletePurchases}>Delete</button>
@@ -295,14 +295,14 @@ export default function Cart() {
                   <div className='flex flex-col items-end gap-3'>
                     <p>
                       Total ({checkedPurchases.length} items):{' '}
-                      <span className='text-[#ee4d2d] text-2xl ml-[2px]'>₫{formatCurreny(pricePayment)}</span>
+                      <span className='ml-[2px] text-2xl text-[#ee4d2d]'>₫{formatCurrency(pricePayment)}</span>
                     </p>
                     <p>
-                      Saved <span className='text-[#ee4d2d] text-sm ml-8'>₫{formatCurreny(priceSaving)}</span>
+                      Saved <span className='ml-8 text-sm text-[#ee4d2d]'>₫{formatCurrency(priceSaving)}</span>
                     </p>
                   </div>
                   <button
-                    className='px-4 py-3 w-[210px] bg-[#ee4d2d] rounded-sm text-sm font-normal text-white hover:opacity-90'
+                    className='w-[210px] rounded-sm bg-[#ee4d2d] px-4 py-3 text-sm font-normal text-white hover:opacity-90'
                     disabled={buyPurchasesMutation.isPending}
                     onClick={handleBuyPurchases}
                   >
@@ -314,9 +314,9 @@ export default function Cart() {
           </>
         ) : (
           <div className='flex flex-col items-center justify-center gap-5'>
-            <img src={noProduct} alt='' className='h-[110px] mt-16' />
+            <img src={noProduct} alt='' className='mt-16 h-[110px]' />
             <p className='text-sm font-bold text-black/40'>Your shopping cart is empty</p>
-            <Link to={path.home} className='px-12 py-3 bg-[#ee4d2d] rounded-sm font-normal text-white capitalize'>
+            <Link to={path.home} className='rounded-sm bg-[#ee4d2d] px-12 py-3 font-normal capitalize text-white'>
               Go shopping now
             </Link>
           </div>

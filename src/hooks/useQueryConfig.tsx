@@ -1,5 +1,8 @@
 import React from 'react'
-import { isUndefined, omitBy } from 'lodash'
+
+import omitBy from 'lodash/omitBy'
+import isUndefined from 'lodash/isUndefined'
+// import { isUndefined, omitBy } from 'lodash'
 import { sortBy } from '~/constants/product'
 import useQueryParams from '~/hooks/useQueryParams'
 import { ProductConfig } from '~/types/product.type'

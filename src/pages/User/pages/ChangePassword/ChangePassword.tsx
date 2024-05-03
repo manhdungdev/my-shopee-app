@@ -10,7 +10,7 @@ import { ErrorResponse } from '~/types/utils.type'
 import { UserSchema, userSchema } from '~/utils/rules'
 import { isUnprocessableEntity } from '~/utils/utils'
 import DateSelect from '../../components/DateSelect'
-import { omit } from 'lodash'
+import omit from 'lodash/omit'
 import InputPassword from '../../components/InputPassword'
 type FormData = Pick<UserSchema, 'password' | 'new_password' | 'confirm_password'>
 

@@ -1,19 +1,30 @@
-import React, { useContext } from 'react'
+import React, { Suspense, lazy, useContext } from 'react'
 import { Navigate, Outlet, useRoutes } from 'react-router-dom'
-import ProductList from './pages/ProductList'
-import Login from './pages/Login'
-import Register from './pages/Register'
+// import ProductList from './pages/ProductList'
+// import Login from './pages/Login'
+// import Register from './pages/Register'
 import RegisterLayout from './layouts/RegisterLayout'
 import MainLayout from './layouts/MainLayout'
-import Profile from './pages/User/pages/Profile'
+// import Profile from './pages/User/pages/Profile'
 import { AppContext } from './contexts/app.contexts'
 import { path } from './constants/path'
-import ProductDetail from './pages/ProductDetail'
-import Cart from './pages/Cart'
+// import ProductDetail from './pages/ProductDetail'
+// import Cart from './pages/Cart'
 import CartLayout from './layouts/CartLayout'
 import UserLayout from './layouts/UserLayout/UserLayout'
-import ChangePassword from './pages/User/pages/ChangePassword'
-import HistoryPurchase from './pages/User/pages/HIstoryPurchase'
+// import ChangePassword from './pages/User/pages/ChangePassword'
+// import HistoryPurchase from './pages/User/pages/HistoryPurchase'
+// import NotFound from './pages/NotFound/NotFound'
+
+const Login = lazy(() => import('./pages/Login'))
+const Register = lazy(() => import('./pages/Register'))
+const Profile = lazy(() => import('./pages/User/pages/Profile'))
+const Cart = lazy(() => import('./pages/Cart'))
+const ChangePassword = lazy(() => import('./pages/User/pages/ChangePassword'))
+const HistoryPurchase = lazy(() => import('./pages/User/pages/HistoryPurchase'))
+const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
+const ProductDetail = lazy(() => import('./pages/ProductDetail'))
+const ProductList = lazy(() => import('./pages/ProductList'))
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppContext)
@@ -40,15 +51,27 @@ export default function useRoutesElement() {
           children: [
             {
               path: path.changePassword,
-              element: <ChangePassword />
+              element: (
+                <Suspense>
+                  <ChangePassword />
+                </Suspense>
+              )
             },
             {
               path: path.profile,
-              element: <Profile />
+              element: (
+                <Suspense>
+                  <Profile />
+                </Suspense>
+              )
             },
             {
               path: path.historyPurchase,
-              element: <HistoryPurchase />
+              element: (
+                <Suspense>
+                  <HistoryPurchase />
+                </Suspense>
+              )
             }
           ]
         },
@@ -56,7 +79,9 @@ export default function useRoutesElement() {
           path: path.cart,
           element: (
             <CartLayout>
-              <Cart />
+              <Suspense>
+                <Cart />
+              </Suspense>
             </CartLayout>
           )
         }
@@ -70,7 +95,9 @@ export default function useRoutesElement() {
           path: path.login,
           element: (
             <RegisterLayout>
-              <Login />
+              <Suspense>
+                <Login />
+              </Suspense>
             </RegisterLayout>
           )
         },
@@ -78,7 +105,9 @@ export default function useRoutesElement() {
           path: path.register,
           element: (
             <RegisterLayout>
-              <Register />
+              <Suspense>
+                <Register />
+              </Suspense>
             </RegisterLayout>
           )
         }
@@ -88,7 +117,9 @@ export default function useRoutesElement() {
       path: path.productDetail,
       element: (
         <MainLayout>
-          <ProductDetail />
+          <Suspense>
+            <ProductDetail />
+          </Suspense>
         </MainLayout>
       )
     },
@@ -97,7 +128,19 @@ export default function useRoutesElement() {
       index: true,
       element: (
         <MainLayout>
-          <ProductList />
+          <Suspense>
+            <ProductList />
+          </Suspense>
+        </MainLayout>
+      )
+    },
+    {
+      path: '*',
+      element: (
+        <MainLayout>
+          <Suspense>
+            <NotFound />
+          </Suspense>
         </MainLayout>
       )
     }

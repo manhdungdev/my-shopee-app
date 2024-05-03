@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Product as ProductType } from '~/types/product.type'
-import { formatCurreny, formatCurrenyToSocialStyle, generateSEOUrl } from '~/utils/utils'
+import { formatCurrency, formatCurrencyToSocialStyle, generateSEOUrl } from '~/utils/utils'
 import ProductRating from '../ProductRating'
 import { path } from '~/constants/path'
 
@@ -14,18 +14,18 @@ export default function Product({ product }: ProductProps) {
     <Link to={`${path.home}${generateSEOUrl({ name: product.name, id: product._id })}`}>
       <div className='overflow-hidden rounded-sm bg-white shadow duration-200 hover:translate-y-[-3px] hover:shadow-lg'>
         <div className='relative w-full pt-[100%]'>
-          <img className='absolute w-full h-full object-cover top-0 left-0' src={product.image} alt={product.name} />
+          <img className='absolute left-0 top-0 h-full w-full object-cover' src={product.image} alt={product.name} />
         </div>
-        <div className='p-2 text-xs text-black/87'>
-          <p className='min-h-7 line-clamp-2 '>{product.name}</p>
-          <div className='flex items-center mt-5'>
+        <div className='text-black/87 p-2 text-xs'>
+          <p className='line-clamp-2 min-h-7 '>{product.name}</p>
+          <div className='mt-5 flex items-center'>
             <div className='max-w-[50%] truncate text-gray-500 line-through'>
               <span>₫</span>
-              <span className='text-sm'>{formatCurreny(product.price_before_discount)}</span>
+              <span className='text-sm'>{formatCurrency(product.price_before_discount)}</span>
             </div>
-            <div className='max-w-[50%] ml-1 truncate text-[#ee4d2d]'>
+            <div className='ml-1 max-w-[50%] truncate text-[#ee4d2d]'>
               <span>₫</span>
-              <span className='text-sm'>{formatCurreny(product.price)}</span>
+              <span className='text-sm'>{formatCurrency(product.price)}</span>
             </div>
           </div>
 
@@ -43,7 +43,7 @@ export default function Product({ product }: ProductProps) {
             </div> */}
 
             <div className='ml-2 '>
-              <span>{formatCurrenyToSocialStyle(product.sold)}</span>
+              <span>{formatCurrencyToSocialStyle(product.sold)}</span>
               <span className='ml-1'>sold</span>
             </div>
           </div>

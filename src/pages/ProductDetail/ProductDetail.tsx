@@ -13,13 +13,14 @@ import SuccessAddToCart from '~/components/SucessAddToCart'
 import { path } from '~/constants/path'
 import { purchasesStatus } from '~/constants/purchase'
 import { Product as ProductType, ProductConfig } from '~/types/product.type'
-import { formatCurreny, formatCurrenyToSocialStyle, getIdFromUrl, saleRating } from '~/utils/utils'
+import { formatCurrency, formatCurrencyToSocialStyle, getIdFromUrl, saleRating } from '~/utils/utils'
 
 export default function ProductDetail() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { nameId } = useParams()
   const id = getIdFromUrl(nameId as string)
+  
 
   const productDetailData = useQuery({
     queryKey: ['productDetail', id],
@@ -131,26 +132,26 @@ export default function ProductDetail() {
 
   if (!product) return null
   return (
-    <div className='bg-[#f5f5f5] pt-[30px] pb-[60px] border-b-4 border-solid border-[#ee4d2d]'>
-      <div className='w-11/12 md:w-10/12 mx-auto'>
-        <div className='grid grid-cols-12 gap-4 p-6 bg-white rounded-sm'>
+    <div className='border-b-4 border-solid border-[#ee4d2d] bg-[#f5f5f5] pb-[60px] pt-[30px]'>
+      <div className='mx-auto w-11/12 md:w-10/12'>
+        <div className='grid grid-cols-12 gap-4 rounded-sm bg-white p-6'>
           <div className='col-span-5'>
             <div
-              className='relative w-full pt-[100%] overflow-hidden hover:cursor-zoom-in'
+              className='relative w-full overflow-hidden pt-[100%] hover:cursor-zoom-in'
               onMouseMove={handleZoom}
               onMouseLeave={removeHandleZoom}
             >
               <img
-                className='absolute w-full h-full top-0 left-0 pointer-events-none'
+                className='pointer-events-none absolute left-0 top-0 h-full w-full'
                 src={activeImage}
                 alt=''
                 ref={imageRef}
               />
             </div>
-            <div className='relative grid grid-cols-5 gap-1 mt-3'>
+            <div className='relative mt-3 grid grid-cols-5 gap-1'>
               {currentIndexImages[0] !== 0 && (
                 <button
-                  className='z-10 absolute top-1/2 -translate-y-1/2 -translate-x-1/2  left-0 p-2 flex items-center rounded-full bg-[#dadada] '
+                  className='absolute left-0 top-1/2 z-10 flex  -translate-x-1/2 -translate-y-1/2 items-center rounded-full bg-[#dadada] p-2 '
                   onClick={prev}
                 >
                   <svg fill='white' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512' height='20px' width='20px'>
@@ -162,14 +163,14 @@ export default function ProductDetail() {
                 const isActive = img === activeImage
                 return (
                   <div key={index} className='relative w-full pt-[100%]' onMouseEnter={() => changeActiveImage(img)}>
-                    <img className='absolute w-full h-full top-0 left-0' src={img} alt='' />
+                    <img className='absolute left-0 top-0 h-full w-full' src={img} alt='' />
                     {isActive && <div className='absolute inset-0 border-2 border-solid border-red-500'></div>}
                   </div>
                 )
               })}
               {currentIndexImages[1] !== product.images.length && (
                 <button
-                  className='z-10 absolute top-1/2 -translate-y-1/2 translate-x-1/2 right-0 p-2 flex items-center rounded-full bg-[#dadada]'
+                  className='absolute right-0 top-1/2 z-10 flex -translate-y-1/2 translate-x-1/2 items-center rounded-full bg-[#dadada] p-2'
                   onClick={next}
                 >
                   <svg fill='white' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512' height='20px' width='20px'>
@@ -181,33 +182,33 @@ export default function ProductDetail() {
           </div>
           <div className='col-span-7'>
             <div className='p-5'>
-              <p className='text-black/80 font-medium text-xl uppercase'>{product.name}</p>
-              <div className='flex items-center mt-[10px]'>
+              <p className='text-xl font-medium uppercase text-black/80'>{product.name}</p>
+              <div className='mt-[10px] flex items-center'>
                 <div className='flex items-center gap-2'>
-                  <span className='text-[#d0011b] underline underline-offset-2 font-normal'>{product.rating}</span>
+                  <span className='font-normal text-[#d0011b] underline underline-offset-2'>{product.rating}</span>
                   <ProductRating rating={product.rating} classNameCustom='h-3 fill-[#d0011b]' />
                 </div>
-                <span className='w-[1px] h-6 bg-slate-300 mx-4'></span>
+                <span className='mx-4 h-6 w-[1px] bg-slate-300'></span>
                 <p className='flex items-center'>
-                  <span>{formatCurrenyToSocialStyle(product.sold)}</span>
-                  <span className='text-[#767676] text-sm ml-[6px]'>Sold</span>
+                  <span>{formatCurrencyToSocialStyle(product.sold)}</span>
+                  <span className='ml-[6px] text-sm text-[#767676]'>Sold</span>
                 </p>
               </div>
-              <div className='py-4 px-5 mt-[10px] flex items-center gap-5 bg-[#fafafa]'>
-                <p className='relative flex items-center text-[#929292] before:absolute before:left-0 before:w-full before:h-[2px] before:bg-[#929292]'>
-                  <span className='text-xs underline underline-offset-1 mr-[2px]'>đ</span>
-                  <span>{formatCurreny(product.price_before_discount)}</span>
+              <div className='mt-[10px] flex items-center gap-5 bg-[#fafafa] px-5 py-4'>
+                <p className='relative flex items-center text-[#929292] before:absolute before:left-0 before:h-[2px] before:w-full before:bg-[#929292]'>
+                  <span className='mr-[2px] text-xs underline underline-offset-1'>đ</span>
+                  <span>{formatCurrency(product.price_before_discount)}</span>
                 </p>
-                <p className='relative flex items-center text-[#d0011b] font-medium'>
-                  <span className='text-xl  underline underline-offset-1 mr-[2px]'>đ</span>
-                  <span className='text-3xl  leading-9'>{formatCurreny(product.price)}</span>
+                <p className='relative flex items-center font-medium text-[#d0011b]'>
+                  <span className='mr-[2px]  text-xl underline underline-offset-1'>đ</span>
+                  <span className='text-3xl  leading-9'>{formatCurrency(product.price)}</span>
                 </p>
-                <span className='p-1 bg-[#d0011b] text-white uppercase text-xs font-semibold rounded-sm'>
+                <span className='rounded-sm bg-[#d0011b] p-1 text-xs font-semibold uppercase text-white'>
                   {saleRating(product.price_before_discount, product.price)}
                   <span> OFF</span>
                 </span>
               </div>
-              <div className='flex items-center gap-10 mt-6'>
+              <div className='mt-6 flex items-center gap-10'>
                 <span className='text-sm font-normal text-[#757575]'>Quantity</span>
                 <div className='flex items-center gap-4'>
                   <QuantityController
@@ -218,12 +219,12 @@ export default function ProductDetail() {
                     value={buyCount}
                   />
 
-                  <span className='text-[#757575] text-sm'>{product.quantity} pieces available</span>
+                  <span className='text-sm text-[#757575]'>{product.quantity} pieces available</span>
                 </div>
               </div>
-              <div className='flex items-center mt-6 gap-4'>
+              <div className='mt-6 flex items-center gap-4'>
                 <button
-                  className='flex items-center justify-center gap-3 border border-solid border-[#d0011b] bg-[#fbebed] text-[#d0011b] hover:opacity-80 w-[180px] h-[48px]'
+                  className='flex h-[48px] w-[180px] items-center justify-center gap-3 border border-solid border-[#d0011b] bg-[#fbebed] text-[#d0011b] hover:opacity-80'
                   onClick={addToCart}
                 >
                   <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' height='20px' width='20px' fill='red'>
@@ -234,7 +235,7 @@ export default function ProductDetail() {
                 </button>
                 <button
                   onClick={buyNow}
-                  className='text-sm bg-[#d0011b] text-white hover:opacity-80 w-[180px] h-[48px]'
+                  className='h-[48px] w-[180px] bg-[#d0011b] text-sm text-white hover:opacity-80'
                 >
                   Buy now
                 </button>
@@ -242,8 +243,8 @@ export default function ProductDetail() {
             </div>
           </div>
         </div>
-        <div className=' p-6 bg-white rounded-sm mt-6'>
-          <div className='py-4 px-5 mb-8 bg-[#fafafa] text-[18px]'>
+        <div className=' mt-6 rounded-sm bg-white p-6'>
+          <div className='mb-8 bg-[#fafafa] px-5 py-4 text-[18px]'>
             <p>Product Description</p>
           </div>
           <div
@@ -253,7 +254,7 @@ export default function ProductDetail() {
             }}
           ></div>
         </div>
-        <p className='uppercase mt-10 mb-5 text-[#0000008a] font-medium'>You may also like</p>
+        <p className='mb-5 mt-10 font-medium uppercase text-[#0000008a]'>You may also like</p>
         <div className='mt-6 grid grid-cols-6 gap-3'>
           {products.data &&
             products.data.data.data.products.map((product) => (

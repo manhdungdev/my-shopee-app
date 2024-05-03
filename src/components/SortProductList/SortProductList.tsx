@@ -4,7 +4,7 @@ import { path } from '~/constants/path'
 import { sortBy } from '~/constants/product'
 import { ProductConfig } from '~/types/product.type'
 import { order as orderConstant } from '~/constants/product'
-import { omit } from 'lodash'
+import  omit  from 'lodash/omit'
 import { QueryConfig } from '~/hooks/useQueryConfig'
 
 interface Props {

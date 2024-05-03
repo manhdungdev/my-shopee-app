@@ -5,8 +5,8 @@ export const isUnprocessableEntity = <T>(error: unknown): error is AxiosError<T>
   return axios.isAxiosError(error) && error.response?.status === HttpStatusCode.UnprocessableEntity
 }
 
-export const formatCurreny = (currency: number) => new Intl.NumberFormat('de-DE').format(currency)
-export const formatCurrenyToSocialStyle = (currency: number) =>
+export const formatCurrency = (currency: number) => new Intl.NumberFormat('de-DE').format(currency)
+export const formatCurrencyToSocialStyle = (currency: number) =>
   new Intl.NumberFormat('en', {
     notation: 'compact',
     maximumFractionDigits: 1

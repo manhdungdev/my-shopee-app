@@ -11,7 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { NoUndefinedField } from '~/utils/utils'
 import { ObjectSchema } from 'yup'
 import RatingStars from '../RatingStars'
-import { omit } from 'lodash'
+import omit from 'lodash/omit'
 
 interface Props {
   queryConfig: QueryConfig
@@ -89,7 +89,7 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
   return (
     <div>
       <Link to={path.home} className={`flex items-center font-bold  ${!category ? 'text-[#ee4d2d]' : 'text-black/80'}`}>
-        <svg viewBox='0 0 12 10' className='h-3 mr-3' fill={`${!category ? '#ee4d2d' : ''}`}>
+        <svg viewBox='0 0 12 10' className='mr-3 h-3' fill={`${!category ? '#ee4d2d' : ''}`}>
           <g fillRule='evenodd' stroke='none' strokeWidth={1}>
             <g transform='translate(-373 -208)'>
               <g transform='translate(155 191)'>
@@ -124,7 +124,7 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
                     )
                   ).toString()
                 }}
-                className={`relative flex items-center px-3 py-2 text-sm ${isActive ? 'text-[#ee4d2d] font-bold' : ''}`}
+                className={`relative flex items-center px-3 py-2 text-sm ${isActive ? 'font-bold text-[#ee4d2d]' : ''}`}
               >
                 {isActive && (
                   <svg viewBox='0 0 4 7' className='absolute left-0 h-2 fill-red-500'>
@@ -137,8 +137,8 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
           )
         })}
       </ul>
-      <Link to={path.home} className='flex items-center font-bold text-black/80 mt-8'>
-        <svg viewBox='0 0 15 15' x='0' y='0' className='h-3 mr-3'>
+      <Link to={path.home} className='mt-8 flex items-center font-bold text-black/80'>
+        <svg viewBox='0 0 15 15' x='0' y='0' className='mr-3 h-3'>
           <g>
             <polyline fill='none' stroke='black' points='5.5 13.2 5.5 5.8 1.5 1.2 13.5 1.2 9.5 5.8 9.5 10.2'></polyline>
           </g>
@@ -146,9 +146,9 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
         <span>SEARCH FILTER</span>
       </Link>
       <div className='my-[10px] h-[1px] w-full bg-gray-300' />
-      <p className='py-[10px] font-normal text-sm'>Price Range</p>
+      <p className='py-[10px] text-sm font-normal'>Price Range</p>
       <form action='' className=' mt-[10px] text-sm' onSubmit={onSubmit}>
-        <div className='flex justify-between items-center  gap-[10px] '>
+        <div className='flex items-center justify-between  gap-[10px] '>
           <Controller
             control={control}
             name='price_min'
@@ -167,7 +167,7 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
               )
             }}
           />
-          <span className='w-[10px] h-[1px] bg-slate-500 block shrink-0'></span>
+          <span className='block h-[1px] w-[10px] shrink-0 bg-slate-500'></span>
           <Controller
             control={control}
             name='price_max'
@@ -187,22 +187,22 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
             }}
           />
         </div>
-        <p className='m-1 min-h-5 text-sm font-medium text-red-500 text-center'>{errors.price_max?.message}</p>
+        <p className='m-1 min-h-5 text-center text-sm font-medium text-red-500'>{errors.price_max?.message}</p>
         <button
           type='submit'
-          className=' w-full uppercase  text-white bg-[#f05d40] hover:opacity-90  font-medium text-sm px-5 py-1.5 '
+          className=' w-full bg-[#f05d40]  px-5 py-1.5 text-sm  font-medium uppercase text-white hover:opacity-90 '
         >
           Apply
         </button>
       </form>
       <div className='my-[20px] h-[1px] w-full bg-gray-300' />
-      <p className='pt-[10px] font-normal text-sm'>Rating</p>
+      <p className='pt-[10px] text-sm font-normal'>Rating</p>
       <RatingStars queryConfig={queryConfig} />
       <div className='my-[10px] h-[1px] w-full bg-gray-300' />
       <button
         onClick={handeClearSort}
         type='button'
-        className='mt-2.5 w-full uppercase  text-white bg-[#f05d40] hover:opacity-90  font-medium text-sm px-5 py-1.5 '
+        className='mt-2.5 w-full bg-[#f05d40]  px-5 py-1.5 text-sm  font-medium uppercase text-white hover:opacity-90 '
       >
         CLEAR ALL
       </button>
