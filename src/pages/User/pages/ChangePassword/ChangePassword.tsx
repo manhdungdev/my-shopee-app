@@ -12,6 +12,7 @@ import { isUnprocessableEntity } from '~/utils/utils'
 import DateSelect from '../../components/DateSelect'
 import omit from 'lodash/omit'
 import InputPassword from '../../components/InputPassword'
+import { Helmet } from 'react-helmet-async'
 type FormData = Pick<UserSchema, 'password' | 'new_password' | 'confirm_password'>
 
 const passwordSchema = userSchema.pick(['password', 'new_password', 'confirm_password'])
@@ -60,6 +61,10 @@ export default function ChangePassword() {
   })
   return (
     <div className='mt-4 bg-white px-8 pb-12 pt-5'>
+      <Helmet>
+        <title>Change password | My Shopee App</title>
+        <meta name='description' content='This is change password page' />
+      </Helmet>
       <h1 className='text-xl font-semibold text-[#111]'>Change password</h1>
       <p className='mt-3 text-sm'>Change password to protect your account</p>
       <div className='my-8 h-[1px] w-full bg-[#d5d4d4] '></div>

@@ -1,4 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { Helmet } from 'react-helmet-async'
 import categoryApi from '~/apis/category.api'
 import productApi from '~/apis/product.api'
 import AsideFilter from '~/components/AsideFilter'
@@ -14,7 +15,7 @@ export type QueryConfig = {
 
 export default function ProductList() {
   const queryConfig = useQueryConfig()
-  
+
   // console.log(queryConfig)
   const products = useQuery({
     queryKey: ['products', queryConfig],
@@ -35,6 +36,10 @@ export default function ProductList() {
   // console.log(catogories.data)
   return (
     <main className='border-b-4 border-solid border-[#ee4d2d] bg-[#f5f5f5] pb-[60px] pt-[30px]'>
+      <Helmet>
+        <title>Products list | My Shopee App</title>
+        <meta name='description' content='This is list of products' />
+      </Helmet>
       <div className='mx-auto w-11/12 md:w-10/12'>
         <div className='grid grid-cols-12 gap-5'>
           {categories.data && products.data && (

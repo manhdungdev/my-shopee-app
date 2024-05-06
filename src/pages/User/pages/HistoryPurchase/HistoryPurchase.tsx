@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
+import { Helmet } from 'react-helmet-async'
 import { Link, createSearchParams } from 'react-router-dom'
 import purchasesApi from '~/apis/purchases.api'
 import { path } from '~/constants/path'
@@ -30,6 +31,10 @@ export default function HistoryPurchase() {
 
   return (
     <div className='mt-4 '>
+      <Helmet>
+        <title>History purchase | My Shopee App</title>
+        <meta name='description' content='This is history purchase page' />
+      </Helmet>
       <div className='flex items-center rounded-sm bg-white '>
         {historyPurchase.map((item) => (
           <Link

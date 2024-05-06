@@ -14,6 +14,7 @@ import { getUrlAvatar, isUnprocessableEntity } from '~/utils/utils'
 import { ErrorResponse } from '~/types/utils.type'
 import { config } from '~/constants/config'
 import InputFile from '~/components/InputFile'
+import { Helmet } from 'react-helmet-async'
 
 type FormData = Pick<UserSchema, 'name' | 'address' | 'avatar' | 'date_of_birth' | 'phone'>
 type FormDataError = Omit<FormData, 'date_of_birth'> & {
@@ -114,6 +115,10 @@ export default function Profile() {
 
   return (
     <div className='mt-4 bg-white px-8 pb-12 pt-5'>
+      <Helmet>
+        <title>Profile | My Shopee App</title>
+        <meta name='description' content='This is profile page' />
+      </Helmet>
       <h1 className='text-xl font-semibold text-[#111]'>My Profile</h1>
       <p className='mt-3 text-sm'>Manage and protect your account</p>
       <div className='my-8 h-[1px] w-full bg-[#d5d4d4] '></div>

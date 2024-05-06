@@ -11,6 +11,7 @@ import { isUnprocessableEntity } from '~/utils/utils'
 import { ErrorResponse } from '~/types/utils.type'
 import { toast } from 'react-toastify'
 import { AppContext } from '~/contexts/app.contexts'
+import { Helmet } from 'react-helmet-async'
 
 type FormData = Pick<Schema, 'email' | 'password' | 'confirm_password'>
 const registerSchema = schema.pick(['email', 'password', 'confirm_password'])
@@ -71,6 +72,10 @@ export default function Register() {
 
   return (
     <div className='bg-[#ee4e2e] py-[60px] md:pb-[150px]'>
+      <Helmet>
+        <title>Register | My Shopee App</title>
+        <meta name='description' content='Register to login my Shopee App' />
+      </Helmet>
       <div className=' mx-auto flex items-center justify-center md:relative md:w-11/12 lg:w-8/12'>
         <img className='hidden md:block md:h-[300px] lg:h-[482px]' src={shopeeBg} alt='' />
         <div className='w-full max-w-[300px] rounded-lg border border-gray-200 bg-white p-6 shadow md:absolute md:right-[7%] md:top-[-10%] lg:right-0 lg:top-11 lg:max-w-sm lg:p-8 '>

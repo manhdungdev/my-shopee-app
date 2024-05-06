@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { produce } from 'immer'
-import  keyBy  from 'lodash/keyBy'
+import keyBy from 'lodash/keyBy'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -15,6 +15,7 @@ import { Purchase } from '~/types/purchase.type'
 import http from '~/utils/http'
 import { formatCurrency, generateSEOUrl } from '~/utils/utils'
 import noProduct from '../../assets/img/header/no-product.png'
+import { Helmet } from 'react-helmet-async'
 
 export default function Cart() {
   const location = useLocation()
@@ -159,6 +160,10 @@ export default function Cart() {
 
   return (
     <div className='border-b-4 border-solid border-[#ee4d2d] bg-[#f5f5f5] pb-[60px] pt-5'>
+      <Helmet>
+        <title>Cart | My Shopee App</title>
+        <meta name='description' content='This is cart of products' />
+      </Helmet>
       <div className='mx-auto w-11/12 md:w-10/12'>
         {extendedPurchases.length > 0 ? (
           <>

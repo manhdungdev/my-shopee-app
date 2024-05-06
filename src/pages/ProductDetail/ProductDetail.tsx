@@ -1,7 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
+import { convert } from 'html-to-text'
 // import DOMPurify from 'dompurify'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { useNavigate, useParams } from 'react-router-dom'
 import productApi from '~/apis/product.api'
 import purchasesApi from '~/apis/purchases.api'
@@ -20,7 +22,6 @@ export default function ProductDetail() {
   const queryClient = useQueryClient()
   const { nameId } = useParams()
   const id = getIdFromUrl(nameId as string)
-  
 
   const productDetailData = useQuery({
     queryKey: ['productDetail', id],
@@ -133,6 +134,18 @@ export default function ProductDetail() {
   if (!product) return null
   return (
     <div className='border-b-4 border-solid border-[#ee4d2d] bg-[#f5f5f5] pb-[60px] pt-[30px]'>
+      <Helmet>
+        <title>{product.name} | My Shopee App</title>
+        <meta
+          name='description'
+          content={convert(product.description, {
+            limits: {
+              maxInputLength: 120,
+              ellipsis: '...'
+            }
+          })}
+        />
+      </Helmet>
       <div className='mx-auto w-11/12 md:w-10/12'>
         <div className='grid grid-cols-12 gap-4 rounded-sm bg-white p-6'>
           <div className='col-span-5'>

@@ -1,9 +1,14 @@
 import React from 'react'
+import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 
 export default function NotFound() {
   return (
     <div className='flex h-screen w-full items-center justify-center border-b-4 border-solid border-red-500 bg-[#f5f5f5] px-16 md:px-0'>
+      <Helmet>
+        <title>Page not found | My Shopee App</title>
+        <meta name='description' content='Page not found' />
+      </Helmet>
       <div className='flex flex-col items-center justify-center rounded-lg  px-4 py-8 shadow-2xl md:px-8 lg:px-24'>
         <p className='text-6xl font-bold tracking-wider text-gray-300 md:text-7xl lg:text-9xl'>404</p>
         <p className='mt-4 text-2xl font-bold tracking-wider text-gray-500 md:text-3xl lg:text-5xl'>Page Not Found</p>
