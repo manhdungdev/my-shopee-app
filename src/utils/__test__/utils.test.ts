@@ -8,6 +8,7 @@ describe('isUnauthorizedError', () => {
       isUnauthorizedError(
         new AxiosError(undefined, undefined, undefined, undefined, {
           status: HttpStatusCode.InternalServerError
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any)
       )
     ).toBe(false)
@@ -15,6 +16,7 @@ describe('isUnauthorizedError', () => {
       isUnauthorizedError(
         new AxiosError(undefined, undefined, undefined, undefined, {
           status: HttpStatusCode.Unauthorized
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any)
       )
     ).toBe(true)

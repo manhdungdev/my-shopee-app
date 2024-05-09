@@ -5,9 +5,24 @@ import 'react-toastify/dist/ReactToastify.css'
 import { LocalStorageEventTarget } from './utils/auth'
 import { AppContext } from './contexts/app.contexts'
 
+import { AppProvider } from './contexts/app.contexts.tsx'
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary.tsx'
+import { HelmetProvider } from 'react-helmet-async'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 0
+    }
+  }
+})
+
 function App() {
   const routesElement = useRoutesElement()
   const { reset } = useContext(AppContext)
+
   useEffect(() => {
     LocalStorageEventTarget.addEventListener('clearLS', reset)
     return () => {
@@ -15,10 +30,16 @@ function App() {
     }
   }, [reset])
   return (
-    <div>
-      {routesElement}
-      <ToastContainer />
-    </div>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <AppProvider>
+          <ErrorBoundary>
+            {routesElement}
+            <ToastContainer />
+          </ErrorBoundary>
+        </AppProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   )
 }
 
