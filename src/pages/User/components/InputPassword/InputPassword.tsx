@@ -1,16 +1,16 @@
 import React, { InputHTMLAttributes, useState } from 'react'
-import { FieldPath, UseFormRegister } from 'react-hook-form'
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+import { FieldPath, FieldValues, UseFormRegister } from 'react-hook-form'
+interface Props<TFieldValues extends FieldValues> extends InputHTMLAttributes<HTMLInputElement> {
   className?: string
   classNameError?: string
   errorMessage?: string
-  name: string
+  name: FieldPath<TFieldValues>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register?: UseFormRegister<any>
+  register?: UseFormRegister<TFieldValues>
   children: React.ReactNode
 }
 
-export default function InputPassword({
+export default function InputPassword<TFieldValues extends FieldValues>({
   className = 'w-[400px] rounded-sm border border-gray-300 bg-gray-50 p-2 text-sm  text-gray-900 lg:p-2.5 ',
   classNameError = ' mt-1 min-h-5 text-center text-sm font-medium text-red-500',
   name,
@@ -18,7 +18,7 @@ export default function InputPassword({
   errorMessage,
   children,
   ...rest
-}: Props) {
+}: Props<TFieldValues>) {
   const [isOpen, setIsOpen] = useState(true)
   const registerResult = register && name ? register(name) : null
 

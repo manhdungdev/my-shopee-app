@@ -43,36 +43,63 @@ export default function useRoutesElement() {
       children: [
         {
           path: path.user,
-          element: (
-            <MainLayout>
-              <UserLayout />
-            </MainLayout>
-          ),
+          element: <MainLayout />,
           children: [
             {
-              path: path.changePassword,
-              element: (
-                <Suspense>
-                  <ChangePassword />
-                </Suspense>
-              )
-            },
-            {
-              path: path.profile,
-              element: (
-                <Suspense>
-                  <Profile />
-                </Suspense>
-              )
-            },
-            {
-              path: path.historyPurchase,
-              element: (
-                <Suspense>
-                  <HistoryPurchase />
-                </Suspense>
-              )
+              path: '',
+              element: <UserLayout />,
+              children: [
+                {
+                  path: path.changePassword,
+                  element: (
+                    <Suspense>
+                      <ChangePassword />
+                    </Suspense>
+                  )
+                },
+                {
+                  path: path.profile,
+                  element: (
+                    <Suspense>
+                      <Profile />
+                    </Suspense>
+                  )
+                },
+                {
+                  path: path.historyPurchase,
+                  element: (
+                    <Suspense>
+                      <HistoryPurchase />
+                    </Suspense>
+                  )
+                }
+              ]
             }
+
+            // {
+            //   path: path.changePassword,
+            //   element: (
+            //     <Suspense>
+            //       <ChangePassword />
+            //     </Suspense>
+            //   )
+            // },
+            // {
+            //   path: path.profile,
+            //   element: (
+            //     <Suspense>
+            //       <Profile />
+            //     </Suspense>
+            //   )
+            // },
+            // {
+            //   path: path.historyPurchase,
+            //   element: (
+            //     <Suspense>
+            //       <HistoryPurchase />
+            //     </Suspense>
+            //   )
+            // }
           ]
         },
         {
@@ -114,36 +141,67 @@ export default function useRoutesElement() {
       ]
     },
     {
-      path: path.productDetail,
-      element: (
-        <MainLayout>
-          <Suspense>
-            <ProductDetail />
-          </Suspense>
-        </MainLayout>
-      )
-    },
-    {
-      path: path.home,
-      index: true,
-      element: (
-        <MainLayout>
-          <Suspense>
-            <ProductList />
-          </Suspense>
-        </MainLayout>
-      )
-    },
-    {
-      path: '*',
-      element: (
-        <MainLayout>
-          <Suspense>
-            <NotFound />
-          </Suspense>
-        </MainLayout>
-      )
+      path: '',
+      element: <MainLayout />,
+      children: [
+        {
+          path: path.productDetail,
+          element: (
+            <Suspense>
+              <ProductDetail />
+            </Suspense>
+          )
+        },
+        {
+          path: path.home,
+          index: true,
+          element: (
+            <Suspense>
+              <ProductList />
+            </Suspense>
+          )
+        },
+        {
+          path: '*',
+          element: (
+            <Suspense>
+              <NotFound />
+            </Suspense>
+          )
+        }
+      ]
     }
+    // {
+    //   path: path.productDetail,
+    //   element: (
+    //     <MainLayout>
+    //       <Suspense>
+    //         <ProductDetail />
+    //       </Suspense>
+    //     </MainLayout>
+    //   )
+    // },
+    // {
+    //   path: path.home,
+    //   index: true,
+    //   element: (
+    //     <MainLayout>
+    //       <Suspense>
+    //         <ProductList />
+    //       </Suspense>
+    //     </MainLayout>
+    //   )
+    // },
+    // {
+    //   path: '*',
+    //   element: (
+    //     <MainLayout>
+    //       <Suspense>
+    //         <NotFound />
+    //       </Suspense>
+    //     </MainLayout>
+    //   )
+    // }
   ])
   return routesElement
 }

@@ -23,6 +23,7 @@ const queryClient = new QueryClient({
 })
 
 function App() {
+  console.log('App')
   const routesElement = useRoutesElement()
   const { reset } = useContext(AppContext)
 

@@ -50,7 +50,7 @@ export class Http {
     this.instance.interceptors.response.use(
       (response) => {
         const { url } = response.config
-        console.log(response.config)
+        // console.log(response.config)
         if (url === URL_LOGIN) {
           const data = response.data as AuthResponse
           this.access_token = data.data.access_token
