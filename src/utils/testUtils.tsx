@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { expect } from 'vitest'
 import App from '~/App'
 import { path } from '~/constants/path'
+import { AppProvider, getInitialAppContext } from '~/contexts/app.contexts'
 
 export const delay = (time: number) => {
   return new Promise((resolve) => {
@@ -23,10 +24,16 @@ export const logScreen = async (options?: waitForOptions) => {
 
 export const renderWithRouter = ({ route = '/' } = {}) => {
   window.history.pushState({}, 'Test page', route)
+  const defaultValue = getInitialAppContext()
   return {
-    ...render(<App />, {
-      wrapper: BrowserRouter
-    }),
+    ...render(
+      <AppProvider defaultValue={defaultValue}>
+        <App />
+      </AppProvider>,
+      {
+        wrapper: BrowserRouter
+      }
+    ),
     user: userEvent.setup()
   }
 }

@@ -15,6 +15,9 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       retry: 0
+    },
+    mutations: {
+      retry: 0
     }
   }
 })
@@ -32,12 +35,10 @@ function App() {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <AppProvider>
           <ErrorBoundary>
             {routesElement}
             <ToastContainer />
           </ErrorBoundary>
-        </AppProvider>
       </QueryClientProvider>
     </HelmetProvider>
   )
