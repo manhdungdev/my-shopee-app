@@ -30,6 +30,7 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
     control,
     handleSubmit,
     watch,
+    reset,
     formState: { errors }
   } = useForm<FormData>({
     defaultValues: {
@@ -79,6 +80,7 @@ export default function AsideFilter({ categories, queryConfig, products }: Props
   }, [products, navigate, queryConfig])
 
   const handeClearSort = () => {
+    reset()
     navigate({
       pathname: path.home,
       search: createSearchParams(omit(queryConfig, ['price_max', 'price_min', 'rating_filter', 'category'])).toString()

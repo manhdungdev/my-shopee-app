@@ -90,7 +90,7 @@ export default function Header() {
                 <input
                   type='text'
                   id='default-search'
-                  className='block w-full bg-gray-50 p-1 text-sm text-gray-900   lg:p-2 '
+                  className='block w-full bg-transparent p-1 text-sm text-gray-900   lg:p-2 '
                   placeholder='Deal xả kho đón lễ to'
                   required
                   {...register('product')}

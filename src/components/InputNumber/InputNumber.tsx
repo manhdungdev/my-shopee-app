@@ -13,7 +13,7 @@ const InputNumber = forwardRef<HTMLInputElement, InputNumberProps>(function Inpu
     classNameInput = 'w-full px-2 py-[5px] placeholder:text-xs placeholder:color-black/80',
     classNameError = ' mt-1 min-h-5 text-sm font-medium text-red-500',
     onChange,
-    value = '',
+    value,
     ...rest
   },
   ref
@@ -32,7 +32,7 @@ const InputNumber = forwardRef<HTMLInputElement, InputNumberProps>(function Inpu
         type='text'
         onChange={handleChange}
         className={classNameInput}
-        value={value || localValue}
+        value={value === undefined ? localValue : value}
         {...rest}
         ref={ref}
       />
